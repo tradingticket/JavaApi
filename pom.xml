@@ -56,9 +56,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:https://github.com/tradingticket/JavaApi.git</connection>
+        <connection>scm:git:git@github.com:tradingticket/JavaApi.git</connection>
         <developerConnection>scm:git:git@github.com:tradingticket/JavaApi.git</developerConnection>
-        <url>https://github.com/tradingticket/JavaApi</url>
+        <url>git@github.com:tradingticket/JavaApi.git</url>
         <tag>HEAD</tag>
     </scm>
 
