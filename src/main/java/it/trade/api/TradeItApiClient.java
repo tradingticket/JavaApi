@@ -1,6 +1,8 @@
 package it.trade.api;
 
 
+import it.trade.interceptors.AddCookiesInterceptor;
+import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
 import it.trade.model.callback.DefaultCallbackWithErrorHandling;
@@ -9,6 +11,7 @@ import it.trade.model.callback.TradeItCallback;
 import it.trade.model.reponse.*;
 import it.trade.model.reponse.TradeItAvailableBrokersResponse.Broker;
 import it.trade.model.request.*;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,21 +24,37 @@ import java.util.UUID;
 
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
+    protected RequestCookieProvider requestCookieProvider;
     protected String serverUuid;
     protected String sessionToken;
     protected TradeItEnvironment environment;
     protected String apiKey;
 
     public TradeItApiClient(String apiKey, TradeItEnvironment environment) {
+        this(apiKey, environment, null);
+    }
+
+    public TradeItApiClient(String apiKey, TradeItEnvironment environment, RequestCookieProvider requestCookieProvider) {
         this.environment = environment;
         this.apiKey = apiKey;
         TradeItRequestWithKey.API_KEY = apiKey;
+        this.tradeItApi = createTradeItApi(environment, requestCookieProvider);
+    }
+
+    protected TradeItApi createTradeItApi(TradeItEnvironment environment, RequestCookieProvider requestCookieProvider) {
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        if (requestCookieProvider != null) {
+            this.requestCookieProvider = requestCookieProvider;
+            builder.interceptors().add(new AddCookiesInterceptor(requestCookieProvider));
+        }
+        //        builder.interceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(environment.getBaseUrl())
+                .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        tradeItApi = retrofit.create(TradeItApi.class);
+        return retrofit.create(TradeItApi.class);
     }
 
     protected TradeItApiClient(TradeItApi tradeItApi) { //used for unit tests
@@ -316,5 +335,9 @@ public class TradeItApiClient {
 
     public String getApiKey() {
         return apiKey;
+    }
+
+    public RequestCookieProvider getRequestCookieProvider() {
+        return requestCookieProvider;
     }
 }

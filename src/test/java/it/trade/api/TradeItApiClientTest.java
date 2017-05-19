@@ -1,5 +1,6 @@
 package it.trade.api;
 
+import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.TradeItSecurityQuestion;
 import it.trade.model.callback.AuthenticationCallback;
@@ -14,7 +15,9 @@ import org.junit.Before;
 import org.junit.Test;
 import retrofit2.Response;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +39,15 @@ public class TradeItApiClientTest {
 
     @Before
     public void setUp() throws Exception {
-        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA);
+        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new RequestCookieProvider() {
+            @Override
+            public Set<String> provideCookies() {
+                Set<String> cookies = new HashSet<>();
+                cookies.add("atest1=mycookie1");
+                cookies.add("atest2=mycookie2");
+                return cookies;
+            }
+        });
     }
 
     @Test
