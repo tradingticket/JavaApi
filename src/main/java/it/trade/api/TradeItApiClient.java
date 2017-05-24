@@ -42,15 +42,15 @@ public class TradeItApiClient {
     }
 
     protected TradeItApi createTradeItApi(TradeItEnvironment environment, RequestCookieProvider requestCookieProvider) {
-        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient().newBuilder();
         if (requestCookieProvider != null) {
             this.requestCookieProvider = requestCookieProvider;
-            builder.interceptors().add(new AddCookiesInterceptor(requestCookieProvider));
+            httpClientBuilder.interceptors().add(new AddCookiesInterceptor(requestCookieProvider));
         }
         //        builder.interceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(environment.getBaseUrl())
-                .client(builder.build())
+                .client(httpClientBuilder.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
