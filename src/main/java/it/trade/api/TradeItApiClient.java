@@ -47,7 +47,7 @@ public class TradeItApiClient {
             this.requestCookieProvider = requestCookieProvider;
             httpClientBuilder.interceptors().add(new AddCookiesInterceptor(requestCookieProvider));
         }
-        //        builder.interceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
+//        httpClientBuilder.interceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(environment.getBaseUrl())
                 .client(httpClientBuilder.build())

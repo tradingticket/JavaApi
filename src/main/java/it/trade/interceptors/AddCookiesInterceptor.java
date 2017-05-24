@@ -1,5 +1,6 @@
 package it.trade.interceptors;
 
+import it.trade.model.Cookie;
 import it.trade.model.RequestCookieProvider;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -18,11 +19,11 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-        Set<String> cookies = requestCookieProvider.provideCookies();
+        Set<Cookie> cookies = requestCookieProvider.provideCookies();
         if (cookies != null && !cookies.isEmpty()) {
             String cookieString = "";
-            for (String cookie : cookies) {
-                cookieString += cookie + ";";
+            for (Cookie cookie : cookies) {
+                cookieString += cookie.getName() + "=" + cookie.getValue() + ";";
             }
             builder.addHeader("Cookie", cookieString);
         }

@@ -1,5 +1,6 @@
 package it.trade.api;
 
+import it.trade.model.Cookie;
 import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.TradeItSecurityQuestion;
@@ -41,10 +42,10 @@ public class TradeItApiClientTest {
     public void setUp() throws Exception {
         apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new RequestCookieProvider() {
             @Override
-            public Set<String> provideCookies() {
-                Set<String> cookies = new HashSet<>();
-                cookies.add("atest1=mycookie1");
-                cookies.add("atest2=mycookie2");
+            public Set<Cookie> provideCookies() {
+                Set<Cookie> cookies = new HashSet<>();
+                cookies.add(new Cookie("atest1", "mycookie1"));
+                cookies.add(new Cookie("atest2", "mycookie2"));
                 return cookies;
             }
         });
