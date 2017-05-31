@@ -1,7 +1,6 @@
 package it.trade.api;
 
 
-import it.trade.interceptors.AddCookiesInterceptor;
 import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
@@ -11,6 +10,9 @@ import it.trade.model.callback.TradeItCallback;
 import it.trade.model.reponse.*;
 import it.trade.model.reponse.TradeItAvailableBrokersResponse.Broker;
 import it.trade.model.request.*;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,13 +43,23 @@ public class TradeItApiClient {
         this.tradeItApi = createTradeItApi(environment, requestCookieProvider);
     }
 
-    protected TradeItApi createTradeItApi(TradeItEnvironment environment, RequestCookieProvider requestCookieProvider) {
+    protected TradeItApi createTradeItApi(TradeItEnvironment environment, final RequestCookieProvider requestCookieProvider) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient().newBuilder();
         if (requestCookieProvider != null) {
             this.requestCookieProvider = requestCookieProvider;
-            httpClientBuilder.interceptors().add(new AddCookiesInterceptor(requestCookieProvider));
+            httpClientBuilder.cookieJar(new CookieJar() {
+                @Override
+                public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                }
+
+                @Override
+                public List<Cookie> loadForRequest(HttpUrl url) {
+                    return requestCookieProvider.provideCookies();
+                }
+            });
         }
-//        httpClientBuilder.interceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
+//        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(environment.getBaseUrl())
                 .client(httpClientBuilder.build())

@@ -1,8 +1,10 @@
 package it.trade.model;
 
 
-import java.util.Set;
+import okhttp3.Cookie;
+
+import java.util.List;
 
 public interface RequestCookieProvider {
-    Set<Cookie> provideCookies();
+    List<Cookie> provideCookies();
 }
