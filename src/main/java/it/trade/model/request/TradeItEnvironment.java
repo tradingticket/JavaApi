@@ -4,7 +4,7 @@ public enum TradeItEnvironment {
 
     PRODUCTION("https://ems.tradingticket.com/"),
     QA("https://ems.qa.tradingticket.com/"),
-    LOCAL("https://localhost:8443/");
+    LOCAL("http://10.0.2.2:8080/");
 
     private String baseUrl;
 
