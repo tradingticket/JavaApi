@@ -116,10 +116,10 @@ public class TradeItApiClientTest {
             @Override
             protected void onSuccessResponse(Response<TradeItAuthenticateResponse> response) {
                 assertThat("accounts are returned", !response.body().accounts.isEmpty(), CoreMatchers.is(true));
-                apiClient.getAccountOverview(response.body().accounts.get(0).accountNumber, new TradeItCallback<TradeItGetAccountOverviewResponse>() {
+                apiClient.getAccountOverview(response.body().accounts.get(0).accountNumber, new TradeItCallback<TradeItAccountOverviewResponse>() {
                     @Override
-                    public void onSuccess(TradeItGetAccountOverviewResponse accountOverviewResponse) {
-                        assertThat("available cash is not null", accountOverviewResponse.availableCash, CoreMatchers.notNullValue());
+                    public void onSuccess(TradeItAccountOverviewResponse accountOverviewResponse) {
+                        assertThat("available cash is not null", accountOverviewResponse.accountOverview.availableCash, CoreMatchers.notNullValue());
                         apiClient.keepSessionAlive(new TradeItCallback<TradeItResponse>() {
                             @Override
                             public void onSuccess(TradeItResponse response) {

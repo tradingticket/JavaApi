@@ -246,12 +246,12 @@ public class TradeItApiClient {
         });
     }
 
-    public void getAccountOverview(String accountNumber, final TradeItCallback<TradeItGetAccountOverviewResponse> callback) {
+    public void getAccountOverview(String accountNumber, final TradeItCallback<TradeItAccountOverviewResponse> callback) {
         TradeItGetAccountOverviewRequest request = new TradeItGetAccountOverviewRequest(accountNumber);
         injectSession(request);
-        tradeItApi.getAccountOverview(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItGetAccountOverviewResponse, TradeItGetAccountOverviewResponse>(callback) {
+        tradeItApi.getAccountOverview(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItAccountOverviewResponse, TradeItAccountOverviewResponse>(callback) {
             @Override
-            public void onSuccessResponse(Response<TradeItGetAccountOverviewResponse> response) {
+            public void onSuccessResponse(Response<TradeItAccountOverviewResponse> response) {
                 callback.onSuccess(response.body());
             }
         });
