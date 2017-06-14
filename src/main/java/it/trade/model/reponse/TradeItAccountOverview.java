@@ -3,7 +3,7 @@ package it.trade.model.reponse;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TradeItGetAccountOverviewResponse extends TradeItResponse {
+public class TradeItAccountOverview {
     @SerializedName("availableCash")
     @Expose
     public Double availableCash;
@@ -34,7 +34,7 @@ public class TradeItGetAccountOverviewResponse extends TradeItResponse {
 
     @Override
     public String toString() {
-        return "TradeItGetAccountOverviewResponse{" +
+        return "TradeItAccountOverview{" +
                 "availableCash=" + availableCash +
                 ", buyingPower=" + buyingPower +
                 ", dayAbsoluteReturn=" + dayAbsoluteReturn +
@@ -50,7 +50,7 @@ public class TradeItGetAccountOverviewResponse extends TradeItResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TradeItGetAccountOverviewResponse that = (TradeItGetAccountOverviewResponse) o;
+        TradeItAccountOverview that = (TradeItAccountOverview) o;
 
         if (availableCash != null ? !availableCash.equals(that.availableCash) : that.availableCash != null)
             return false;
