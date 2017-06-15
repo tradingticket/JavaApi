@@ -826,27 +826,29 @@ class TradeItApiClientSpec extends Specification {
 			Call<TradeItResponse> call = Mock(Call)
 			1 * tradeItApi.getAccountOverview(_  as TradeItGetAccountOverviewRequest) >> call
 			1 * call.enqueue(_) >> { args ->
-				Callback<TradeItGetAccountOverviewResponse> callback = args[0]
-				TradeItGetAccountOverviewResponse tradeItGetAccountOverviewResponse = new TradeItGetAccountOverviewResponse()
-				tradeItGetAccountOverviewResponse.availableCash = 1200.54
-				tradeItGetAccountOverviewResponse.buyingPower = 2604.45
-				tradeItGetAccountOverviewResponse.dayAbsoluteReturn = 100
-				tradeItGetAccountOverviewResponse.dayPercentReturn = 0.45
-				tradeItGetAccountOverviewResponse.totalAbsoluteReturn = -234.98
-				tradeItGetAccountOverviewResponse.totalPercentReturn = -2.34
-				tradeItGetAccountOverviewResponse.totalValue = 12983.34
-				tradeItGetAccountOverviewResponse.status = TradeItResponseStatus.SUCCESS
-				Response<TradeItGetAccountOverviewResponse> response = Response.success(tradeItGetAccountOverviewResponse)
+				Callback<TradeItAccountOverviewResponse> callback = args[0]
+				TradeItAccountOverviewResponse tradeItAccountOverviewResponse = new TradeItAccountOverviewResponse()
+				TradeItAccountOverview tradeItAccountOverview = new TradeItAccountOverview()
+				tradeItAccountOverview.availableCash = 1200.54
+				tradeItAccountOverview.buyingPower = 2604.45
+				tradeItAccountOverview.dayAbsoluteReturn = 100
+				tradeItAccountOverview.dayPercentReturn = 0.45
+				tradeItAccountOverview.totalAbsoluteReturn = -234.98
+				tradeItAccountOverview.totalPercentReturn = -2.34
+				tradeItAccountOverview.totalValue = 12983.34
+				tradeItAccountOverviewResponse.accountOverview = tradeItAccountOverview
+				tradeItAccountOverviewResponse.status = TradeItResponseStatus.SUCCESS
+				Response<TradeItAccountOverviewResponse> response = Response.success(tradeItAccountOverviewResponse)
 				callback.onResponse(call, response)
 
 			}
 
 		when: "calling refresh balance on the linked broker account"
-			TradeItGetAccountOverviewResponse balance = null
-			apiClient.getAccountOverview(accountNumber, new TradeItCallback<TradeItGetAccountOverviewResponse>() {
+			TradeItAccountOverviewResponse accountOverviewResponse = null
+			apiClient.getAccountOverview(accountNumber, new TradeItCallback<TradeItAccountOverviewResponse>() {
 				@Override
-				void onSuccess(TradeItGetAccountOverviewResponse response) {
-					balance = response
+				void onSuccess(TradeItAccountOverviewResponse response) {
+					accountOverviewResponse = response
 					successCallbackCount++
 				}
 
@@ -860,14 +862,15 @@ class TradeItApiClientSpec extends Specification {
 			successCallbackCount == 1
 			errorCallbackCount == 0
 
-		then: "expects balance correctly populated"
-			balance.availableCash == 1200.54
-			balance.buyingPower == 2604.45
-			balance.dayAbsoluteReturn == 100
-			balance.dayPercentReturn == 0.45
-			balance.totalAbsoluteReturn == -234.98
-			balance.totalPercentReturn == -2.34
-			balance.totalValue == 12983.34
+		then: "expects accountOverviewResponse correctly populated"
+			accountOverviewResponse.fxAccountOverview == null
+			accountOverviewResponse.accountOverview.availableCash == 1200.54
+			accountOverviewResponse.accountOverview.buyingPower == 2604.45
+			accountOverviewResponse.accountOverview.dayAbsoluteReturn == 100
+			accountOverviewResponse.accountOverview.dayPercentReturn == 0.45
+			accountOverviewResponse.accountOverview.totalAbsoluteReturn == -234.98
+			accountOverviewResponse.accountOverview.totalPercentReturn == -2.34
+			accountOverviewResponse.accountOverview.totalValue == 12983.34
 
 	}
 
@@ -881,23 +884,23 @@ class TradeItApiClientSpec extends Specification {
 			Call<TradeItResponse> call = Mock(Call)
 			1 * tradeItApi.getAccountOverview(_  as TradeItGetAccountOverviewRequest) >> call
 			1 * call.enqueue(_) >> { args ->
-				Callback<TradeItGetAccountOverviewResponse> callback = args[0]
-				TradeItGetAccountOverviewResponse tradeItGetAccountOverviewResponse = new TradeItGetAccountOverviewResponse()
-				tradeItGetAccountOverviewResponse.code = TradeItErrorCode.SESSION_EXPIRED
-				tradeItGetAccountOverviewResponse.status = TradeItResponseStatus.ERROR
-				tradeItGetAccountOverviewResponse.shortMessage = "My short message"
-				tradeItGetAccountOverviewResponse.longMessages = ["My long message"]
+				Callback<TradeItAccountOverview> callback = args[0]
+				TradeItAccountOverviewResponse tradeItAccountOverviewResponse = new TradeItAccountOverviewResponse()
+				tradeItAccountOverviewResponse.code = TradeItErrorCode.SESSION_EXPIRED
+				tradeItAccountOverviewResponse.status = TradeItResponseStatus.ERROR
+				tradeItAccountOverviewResponse.shortMessage = "My short message"
+				tradeItAccountOverviewResponse.longMessages = ["My long message"]
 
-				Response<TradeItGetAccountOverviewResponse> response = Response.success(tradeItGetAccountOverviewResponse)
+				Response<TradeItAccountOverviewResponse> response = Response.success(tradeItAccountOverviewResponse)
 				callback.onResponse(call, response)
 
 			}
 
 		when: "calling getAccountOverview"
 			TradeItErrorResult errorResult = null
-			apiClient.getAccountOverview(accountNumber, new TradeItCallback<TradeItGetAccountOverviewResponse>() {
+			apiClient.getAccountOverview(accountNumber, new TradeItCallback<TradeItAccountOverview>() {
 				@Override
-				void onSuccess(TradeItGetAccountOverviewResponse response) {
+				void onSuccess(TradeItAccountOverview response) {
 					successCallbackCount++
 				}
 
