@@ -39,7 +39,7 @@ public class TradeItApiClientTest {
 
     @Before
     public void setUp() throws Exception {
-        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new Interceptor() {
+        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, null, new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request originalRequest = chain.request();
