@@ -9,14 +9,11 @@ import it.trade.model.callback.TradeItCallbackWithSecurityQuestionImpl;
 import it.trade.model.reponse.*;
 import it.trade.model.request.TradeItEnvironment;
 import it.trade.model.request.TradeItLinkedLogin;
-import okhttp3.Interceptor;
-import okhttp3.Request;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -39,18 +36,7 @@ public class TradeItApiClientTest {
 
     @Before
     public void setUp() throws Exception {
-        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request transformedRequest = originalRequest.newBuilder()
-                        .header("HeaderTestName", "HeaderTestValue")
-                        .header("HeaderTestName2", "HeaderTestValue2")
-                        .method(originalRequest.method(), originalRequest.body())
-                        .build();
-                return chain.proceed(transformedRequest);
-            }
-        });
+        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA);
     }
 
     @Test
