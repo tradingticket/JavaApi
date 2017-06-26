@@ -1,6 +1,5 @@
 package it.trade.api;
 
-import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.TradeItSecurityQuestion;
 import it.trade.model.callback.AuthenticationCallback;
@@ -10,13 +9,14 @@ import it.trade.model.callback.TradeItCallbackWithSecurityQuestionImpl;
 import it.trade.model.reponse.*;
 import it.trade.model.request.TradeItEnvironment;
 import it.trade.model.request.TradeItLinkedLogin;
-import okhttp3.Cookie;
+import okhttp3.Interceptor;
+import okhttp3.Request;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import retrofit2.Response;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -39,15 +39,16 @@ public class TradeItApiClientTest {
 
     @Before
     public void setUp() throws Exception {
-        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new RequestCookieProvider() {
+        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new Interceptor() {
             @Override
-            public List<Cookie> provideCookies() {
-                List<Cookie> cookies = new ArrayList<>();
-                Cookie cookie1 = new Cookie.Builder().name("test1").value("value1").domain("mydomain1").build();
-                Cookie cookie2 = new Cookie.Builder().name("test2").value("value2").domain("mydomain2").build();
-                cookies.add(cookie1);
-                cookies.add(cookie2);
-                return cookies;
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request originalRequest = chain.request();
+                Request transformedRequest = originalRequest.newBuilder()
+                        .header("HeaderTestName", "HeaderTestValue")
+                        .header("HeaderTestName2", "HeaderTestValue2")
+                        .method(originalRequest.method(), originalRequest.body())
+                        .build();
+                return chain.proceed(transformedRequest);
             }
         });
     }
