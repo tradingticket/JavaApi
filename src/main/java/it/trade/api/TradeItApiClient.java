@@ -1,6 +1,7 @@
 package it.trade.api;
 
 
+import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
 import it.trade.model.callback.DefaultCallbackWithErrorHandling;
@@ -9,7 +10,9 @@ import it.trade.model.callback.TradeItCallback;
 import it.trade.model.reponse.*;
 import it.trade.model.reponse.TradeItAvailableBrokersResponse.Broker;
 import it.trade.model.request.*;
-import okhttp3.Interceptor;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +26,7 @@ import java.util.UUID;
 
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
-    protected Interceptor requestInterceptor;
+    protected RequestCookieProvider requestCookieProvider;
     protected String serverUuid;
     protected String sessionToken;
     protected TradeItEnvironment environment;
@@ -33,21 +36,27 @@ public class TradeItApiClient {
         this(apiKey, environment, null);
     }
 
-    /**
-     * Use this constructor if you want to add your custom headers to each request
-     */
-    public TradeItApiClient(String apiKey, TradeItEnvironment environment, Interceptor requestInterceptor) {
+    public TradeItApiClient(String apiKey, TradeItEnvironment environment, RequestCookieProvider requestCookieProvider) {
         this.environment = environment;
         this.apiKey = apiKey;
         TradeItRequestWithKey.API_KEY = apiKey;
-        this.tradeItApi = createTradeItApi(environment, requestInterceptor);
+        this.tradeItApi = createTradeItApi(environment, requestCookieProvider);
     }
 
-    protected TradeItApi createTradeItApi(TradeItEnvironment environment, final Interceptor requestInterceptor) {
+    protected TradeItApi createTradeItApi(TradeItEnvironment environment, final RequestCookieProvider requestCookieProvider) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient().newBuilder();
-        if (requestInterceptor != null) {
-            this.requestInterceptor = requestInterceptor;
-            httpClientBuilder.networkInterceptors().add(requestInterceptor);
+        if (requestCookieProvider != null) {
+            this.requestCookieProvider = requestCookieProvider;
+            httpClientBuilder.cookieJar(new CookieJar() {
+                @Override
+                public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                }
+
+                @Override
+                public List<Cookie> loadForRequest(HttpUrl url) {
+                    return requestCookieProvider.provideCookies();
+                }
+            });
         }
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
 
@@ -338,5 +347,9 @@ public class TradeItApiClient {
 
     public String getApiKey() {
         return apiKey;
+    }
+
+    public RequestCookieProvider getRequestCookieProvider() {
+        return requestCookieProvider;
     }
 }
