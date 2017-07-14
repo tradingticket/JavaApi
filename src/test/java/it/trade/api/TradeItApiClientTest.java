@@ -57,7 +57,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to get the broker list", error, CoreMatchers.nullValue());
+                fail("fails to get the broker list: " + error);
                 lock.countDown();
             }
         });
@@ -76,7 +76,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to get the broker list", error, CoreMatchers.nullValue());
+                fail("fails to get the broker list: " + error);
                 lock.countDown();
             }
         });
@@ -95,7 +95,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to get the broker list", error, CoreMatchers.nullValue());
+                fail("fails to get the broker list: " + error);
                 lock.countDown();
             }
         });
@@ -123,7 +123,7 @@ public class TradeItApiClientTest {
 
                             @Override
                             public void onError(TradeItErrorResult error) {
-                                assertThat("fails to keepSessionAlive", error, CoreMatchers.nullValue());
+                                fail("fails to keepSessionAlive: " + error);
                                 lock.countDown();
                             }
                         });
@@ -131,15 +131,15 @@ public class TradeItApiClientTest {
 
                     @Override
                     public void onError(TradeItErrorResult error) {
-                        assertThat("fails to getAccountOverview", error, CoreMatchers.nullValue());
+                        fail("fails to getAccountOverview: " + error);
                         lock.countDown();
                     }
                 });
             }
 
             @Override
-            protected void onErrorResponse(TradeItErrorResult errorResult) {
-                assertThat("fails to authenticate", errorResult, CoreMatchers.nullValue());
+            protected void onErrorResponse(TradeItErrorResult error) {
+                fail("fails to authenticate: " + error);
                 lock.countDown();
             }
         });
@@ -165,7 +165,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to authenticate with security question", error, CoreMatchers.nullValue());
+                fail("fails to authenticate with security question: " + error);
                 lock.countDown();
             }
         };
