@@ -7,27 +7,35 @@ public class TransactionDetails {
     @SerializedName("description")
     @Expose
     public String description;
+
     @SerializedName("symbol")
     @Expose
     public String symbol;
+
     @SerializedName("date")
     @Expose
     public String date;
+
     @SerializedName("amount")
     @Expose
     public Double amount;
+
     @SerializedName("action")
     @Expose
     public String action;
+
     @SerializedName("type")
     @Expose
     public String type;
+
     @SerializedName("price")
     @Expose
     public Double price;
+
     @SerializedName("quantity")
     @Expose
     public Double quantity;
+
     @SerializedName("commission")
     @Expose
     public Double commission;

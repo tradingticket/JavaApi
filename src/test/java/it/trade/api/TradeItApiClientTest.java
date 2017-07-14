@@ -19,6 +19,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Integration tests
@@ -44,8 +46,13 @@ public class TradeItApiClientTest {
         apiClient.getAvailableBrokers(new TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>>() {
             @Override
             public void onSuccess(List<TradeItAvailableBrokersResponse.Broker> brokerList) {
-                assertThat("The broker list is not empty", brokerList.isEmpty(), CoreMatchers.is(false));
                 lock.countDown();
+
+                assertThat("The broker list is not empty", brokerList.isEmpty(), CoreMatchers.is(false));
+
+                TradeItAvailableBrokersResponse.Broker broker = brokerList.get(0);
+                TradeItAvailableBrokersResponse.Broker.BrokerInstrument instrument = broker.brokerInstruments.get(0);
+                assertTrue(instrument.instrument.length() > 0);
             }
 
             @Override
@@ -178,5 +185,4 @@ public class TradeItApiClientTest {
         boolean notExpired = lock.await(EXPIRED_TIME, TimeUnit.MILLISECONDS);
         assertThat("The call to authenticateDummySecurityWithExistingUserIdAndToken is not expired", notExpired, CoreMatchers.is(true));
     }
-
 }
