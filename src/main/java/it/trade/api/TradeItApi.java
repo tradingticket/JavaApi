@@ -26,7 +26,7 @@ public interface TradeItApi {
     @POST("api/v2/user/oAuthUpdate")
     Call<TradeItLinkLoginResponse> relinkLogin(@Body TradeItRelinkLoginRequest request);
 
-    @POST("/api/v2/preference/getBrokerList")
+    @POST("api/v2/preference/getBrokerList")
     Call<TradeItAvailableBrokersResponse> getAvailableBrokers(@Body TradeItRequestWithKey request);
 
     @POST("api/v2/user/oAuthDelete")
