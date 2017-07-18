@@ -1,6 +1,5 @@
 package it.trade.api;
 
-import it.trade.model.RequestCookieProvider;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.TradeItSecurityQuestion;
 import it.trade.model.callback.AuthenticationCallback;
@@ -10,18 +9,18 @@ import it.trade.model.callback.TradeItCallbackWithSecurityQuestionImpl;
 import it.trade.model.reponse.*;
 import it.trade.model.request.TradeItEnvironment;
 import it.trade.model.request.TradeItLinkedLogin;
-import okhttp3.Cookie;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import retrofit2.Response;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Integration tests
@@ -39,17 +38,7 @@ public class TradeItApiClientTest {
 
     @Before
     public void setUp() throws Exception {
-        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, new RequestCookieProvider() {
-            @Override
-            public List<Cookie> provideCookies() {
-                List<Cookie> cookies = new ArrayList<>();
-                Cookie cookie1 = new Cookie.Builder().name("test1").value("value1").domain("mydomain1").build();
-                Cookie cookie2 = new Cookie.Builder().name("test2").value("value2").domain("mydomain2").build();
-                cookies.add(cookie1);
-                cookies.add(cookie2);
-                return cookies;
-            }
-        });
+        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA);
     }
 
     @Test
@@ -57,13 +46,18 @@ public class TradeItApiClientTest {
         apiClient.getAvailableBrokers(new TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>>() {
             @Override
             public void onSuccess(List<TradeItAvailableBrokersResponse.Broker> brokerList) {
-                assertThat("The broker list is not empty", brokerList.isEmpty(), CoreMatchers.is(false));
                 lock.countDown();
+
+                assertThat("The broker list is not empty", brokerList.isEmpty(), CoreMatchers.is(false));
+
+                TradeItAvailableBrokersResponse.Broker broker = brokerList.get(0);
+                TradeItAvailableBrokersResponse.Broker.BrokerInstrument instrument = broker.brokerInstruments.get(0);
+                assertTrue(instrument.instrument.length() > 0);
             }
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to get the broker list", error, CoreMatchers.nullValue());
+                fail("fails to get the broker list: " + error);
                 lock.countDown();
             }
         });
@@ -82,7 +76,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to get the broker list", error, CoreMatchers.nullValue());
+                fail("fails to get the broker list: " + error);
                 lock.countDown();
             }
         });
@@ -101,7 +95,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to get the broker list", error, CoreMatchers.nullValue());
+                fail("fails to get the broker list: " + error);
                 lock.countDown();
             }
         });
@@ -129,7 +123,7 @@ public class TradeItApiClientTest {
 
                             @Override
                             public void onError(TradeItErrorResult error) {
-                                assertThat("fails to keepSessionAlive", error, CoreMatchers.nullValue());
+                                fail("fails to keepSessionAlive: " + error);
                                 lock.countDown();
                             }
                         });
@@ -137,15 +131,15 @@ public class TradeItApiClientTest {
 
                     @Override
                     public void onError(TradeItErrorResult error) {
-                        assertThat("fails to getAccountOverview", error, CoreMatchers.nullValue());
+                        fail("fails to getAccountOverview: " + error);
                         lock.countDown();
                     }
                 });
             }
 
             @Override
-            protected void onErrorResponse(TradeItErrorResult errorResult) {
-                assertThat("fails to authenticate", errorResult, CoreMatchers.nullValue());
+            protected void onErrorResponse(TradeItErrorResult error) {
+                fail("fails to authenticate: " + error);
                 lock.countDown();
             }
         });
@@ -171,7 +165,7 @@ public class TradeItApiClientTest {
 
             @Override
             public void onError(TradeItErrorResult error) {
-                assertThat("fails to authenticate with security question", error, CoreMatchers.nullValue());
+                fail("fails to authenticate with security question: " + error);
                 lock.countDown();
             }
         };
@@ -191,5 +185,4 @@ public class TradeItApiClientTest {
         boolean notExpired = lock.await(EXPIRED_TIME, TimeUnit.MILLISECONDS);
         assertThat("The call to authenticateDummySecurityWithExistingUserIdAndToken is not expired", notExpired, CoreMatchers.is(true));
     }
-
 }
