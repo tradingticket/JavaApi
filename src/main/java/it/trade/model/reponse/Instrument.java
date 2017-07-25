@@ -1,6 +1,6 @@
-package it.trade.model.reponse
+package it.trade.model.reponse;
 
-import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.SerializedName;
 
 
 public enum Instrument {
@@ -11,5 +11,5 @@ public enum Instrument {
 	FX,
 	@SerializedName("options")
 	OPTIONS,
-	UNKNOWN
+	UNKNOWN;
 }
