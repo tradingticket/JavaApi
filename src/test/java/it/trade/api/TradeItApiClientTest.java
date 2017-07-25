@@ -51,8 +51,8 @@ public class TradeItApiClientTest {
                 assertThat("The broker list is not empty", brokerList.isEmpty(), CoreMatchers.is(false));
 
                 TradeItAvailableBrokersResponse.Broker broker = brokerList.get(0);
-                TradeItAvailableBrokersResponse.Broker.BrokerInstrument instrument = broker.brokerInstruments.get(0);
-                assertTrue(instrument.instrument.length() > 0);
+                TradeItAvailableBrokersResponse.Broker.BrokerInstrument brokerInstrument = broker.brokerInstruments.get(0);
+                assertTrue(brokerInstrument.getInstrument() != null && brokerInstrument.getInstrument() != Instrument.UNKNOWN);
             }
 
             @Override

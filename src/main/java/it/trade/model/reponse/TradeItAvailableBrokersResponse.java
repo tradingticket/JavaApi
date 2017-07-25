@@ -27,7 +27,7 @@ public class TradeItAvailableBrokersResponse extends TradeItResponse {
 		public class BrokerInstrument {
 			@SerializedName("instrument")
 			@Expose
-			public String instrument;
+			private Instrument instrument;
 
 			@SerializedName("supportsAccountOverview")
 			@Expose
@@ -60,6 +60,17 @@ public class TradeItAvailableBrokersResponse extends TradeItResponse {
 			@SerializedName("supportsTransactionHistory")
 			@Expose
 			public boolean supportsTransactionHistory;
+
+			public Instrument getInstrument() {
+				if (this.instrument == null) {
+					instrument = Instrument.UNKNOWN;
+				}
+				return instrument;
+			}
+
+			public void setInstrument(Instrument instrument) {
+				this.instrument = instrument;
+			}
 
 			@java.lang.Override
 			public java.lang.String toString() {
