@@ -10,11 +10,11 @@ public class Price {
 
         @SerializedName("limitPrice")
         @Expose
-        public Integer limitPrice;
+        public Double limitPrice;
 
         @SerializedName("stopPrice")
         @Expose
-        public Integer stopPrice;
+        public Double stopPrice;
 
         @SerializedName("last")
         @Expose

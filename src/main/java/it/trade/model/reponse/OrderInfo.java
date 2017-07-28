@@ -10,7 +10,7 @@ public class OrderInfo {
 
         @SerializedName("quantity")
         @Expose
-        public Integer quantity;
+        public Double quantity;
 
         @SerializedName("symbol")
         @Expose
