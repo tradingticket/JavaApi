@@ -17,9 +17,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
@@ -45,6 +45,9 @@ public class TradeItApiClient {
 
     protected TradeItApi createTradeItApi(TradeItEnvironment environment, final Interceptor requestInterceptor) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient().newBuilder();
+        httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
+        httpClientBuilder.readTimeout(30, TimeUnit.SECONDS);
+
         if (requestInterceptor != null) {
             this.requestInterceptor = requestInterceptor;
             httpClientBuilder.networkInterceptors().add(requestInterceptor);
@@ -72,19 +75,10 @@ public class TradeItApiClient {
 
     public void getAvailableBrokers(final TradeItCallback<List<Broker>> callback) {
         TradeItRequestWithKey request = new TradeItRequestWithKey();
-        tradeItApi.getAvailableBrokers(request).enqueue(new Callback<TradeItAvailableBrokersResponse>() {
-            List<Broker> brokerList = new ArrayList<>();
-
-            public void onResponse(Call<TradeItAvailableBrokersResponse> call, Response<TradeItAvailableBrokersResponse> response) {
-                if (response.isSuccessful() && response.body().status == TradeItResponseStatus.SUCCESS) {
-                    TradeItAvailableBrokersResponse availableBrokersResponse = response.body();
-                    brokerList = availableBrokersResponse.brokerList;
-                }
-                callback.onSuccess(brokerList);
-            }
-
-            public void onFailure(Call call, Throwable t) {
-                callback.onSuccess(brokerList);
+        tradeItApi.getAvailableBrokers(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItAvailableBrokersResponse, List<Broker>>(callback) {
+            @Override
+            public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
+                callback.onSuccess(response.body().brokerList);
             }
         });
     }

@@ -48,7 +48,6 @@ class TradeItApiClientSpec extends Specification {
 
 				List<Broker> brokerList = [broker1, broker2, broker3]
 				tradeItAvailableBrokersResponse.brokerList = brokerList
-				tradeItAvailableBrokersResponse.code = null
 				tradeItAvailableBrokersResponse.sessionToken = "My session token"
 				tradeItAvailableBrokersResponse.longMessages = null
 				tradeItAvailableBrokersResponse.status = TradeItResponseStatus.SUCCESS
@@ -90,6 +89,8 @@ class TradeItApiClientSpec extends Specification {
 
 	def "GetAvailableBrokers handles an error response from trade it"() {
 		given: "an error response from trade it"
+			String shortMessage = "This is the short message for the session expired error"
+			String longMessage = "This is the long message for the session expired error"
 			Call<TradeItAvailableBrokersResponse> call = Mock(Call)
 			1 * tradeItApi.getAvailableBrokers(_ as TradeItRequestWithKey) >> call
 			1 * call.enqueue(_) >> { args ->
@@ -98,8 +99,8 @@ class TradeItApiClientSpec extends Specification {
 				tradeItAvailableBrokersResponse.code = TradeItErrorCode.TOKEN_INVALID_OR_EXPIRED
 				tradeItAvailableBrokersResponse.status = TradeItResponseStatus.ERROR
 				tradeItAvailableBrokersResponse.brokerList = null
-				tradeItAvailableBrokersResponse.shortMessage = "This is the short message for the session expired error"
-				tradeItAvailableBrokersResponse.longMessages = ["This is the long message for the session expired error"]
+				tradeItAvailableBrokersResponse.shortMessage = shortMessage
+				tradeItAvailableBrokersResponse.longMessages = [longMessage]
 				tradeItAvailableBrokersResponse.sessionToken = "My session token"
 
 				Response<TradeItAvailableBrokersResponse> response = Response.success(tradeItAvailableBrokersResponse);
@@ -109,26 +110,27 @@ class TradeItApiClientSpec extends Specification {
 		when: "calling getAvailableBrokers"
 			int successCallBackCount = 0
 			int errorCallBackCount = 0
-			List<TradeItAvailableBrokersResponse.Broker> brokerList = null
+			TradeItErrorResult errorResult = null
 			apiClient.getAvailableBrokers(new TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>>() {
 				@Override
 				public void onSuccess(List<TradeItAvailableBrokersResponse.Broker> brokerListResponse) {
 					successCallBackCount++
-					brokerList = brokerListResponse
 				}
 
 				@Override
 				public void onError(TradeItErrorResult error) {
 					errorCallBackCount++
+					errorResult = error
 				}
 			});
 
-		then: "expects the successCallback called once"
-			successCallBackCount == 1
-			errorCallBackCount == 0
+		then: "expects the errorCallBackCount called once"
+			successCallBackCount == 0
+			errorCallBackCount == 1
 
-		and: "expects an empty list"
-			brokerList.isEmpty() == true;
+		and: "expects the following error"
+			errorResult.shortMessage == shortMessage
+			errorResult.longMessages == [longMessage]
 	}
 
 	def "getOAuthLoginPopupUrlForMobile handles a successful response from trade it"() {
