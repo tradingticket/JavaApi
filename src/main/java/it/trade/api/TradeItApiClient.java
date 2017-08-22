@@ -1,6 +1,7 @@
 package it.trade.api;
 
 
+import it.trade.factory.Tls12SocketFactory;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
 import it.trade.model.callback.DefaultCallbackWithErrorHandling;
@@ -28,23 +29,33 @@ public class TradeItApiClient {
     protected String sessionToken;
     protected TradeItEnvironment environment;
     protected String apiKey;
+    protected boolean forceTLS12;
 
     public TradeItApiClient(String apiKey, TradeItEnvironment environment) {
-        this(apiKey, environment, null);
+        this(apiKey, environment, null, false);
+    }
+
+    public TradeItApiClient(String apiKey, TradeItEnvironment environment, boolean forceTLS12) {
+        this(apiKey, environment, null, forceTLS12);
     }
 
     /**
      * Use this constructor if you want to add your custom headers to each request
      */
     public TradeItApiClient(String apiKey, TradeItEnvironment environment, Interceptor requestInterceptor) {
+        this(apiKey, environment, requestInterceptor, false);
+    }
+
+    public TradeItApiClient(String apiKey, TradeItEnvironment environment, Interceptor requestInterceptor, boolean forceTLS12) {
         this.environment = environment;
         this.apiKey = apiKey;
         TradeItRequestWithKey.API_KEY = apiKey;
-        this.tradeItApi = createTradeItApi(environment, requestInterceptor);
+        this.tradeItApi = createTradeItApi(environment, requestInterceptor, forceTLS12);
     }
 
-    protected TradeItApi createTradeItApi(TradeItEnvironment environment, final Interceptor requestInterceptor) {
+    protected TradeItApi createTradeItApi(TradeItEnvironment environment, final Interceptor requestInterceptor, boolean forceTLS12) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient().newBuilder();
+
         httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
         httpClientBuilder.readTimeout(30, TimeUnit.SECONDS);
 
@@ -52,6 +63,11 @@ public class TradeItApiClient {
             this.requestInterceptor = requestInterceptor;
             httpClientBuilder.networkInterceptors().add(requestInterceptor);
         }
+
+        if (forceTLS12) {
+            httpClientBuilder = Tls12SocketFactory.enableTls12(httpClientBuilder);
+        }
+
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
 
         Retrofit retrofit = new Retrofit.Builder()
