@@ -29,7 +29,6 @@ public class TradeItApiClient {
     protected String sessionToken;
     protected TradeItEnvironment environment;
     protected String apiKey;
-    protected boolean forceTLS12;
 
     public TradeItApiClient(String apiKey, TradeItEnvironment environment) {
         this(apiKey, environment, null, false);
