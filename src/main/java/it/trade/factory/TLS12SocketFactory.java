@@ -24,13 +24,13 @@ import java.util.List;
  * @link https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
  * @see SSLSocketFactory
  */
-public class Tls12SocketFactory extends SSLSocketFactory {
+public class TLS12SocketFactory extends SSLSocketFactory {
     private static final String[] TLS_V12_ONLY = {"TLSv1.2"};
-    private static final Logger LOGGER = LoggerFactory.getLogger(Tls12SocketFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TLS12SocketFactory.class);
 
     final SSLSocketFactory delegate;
 
-    public Tls12SocketFactory(SSLSocketFactory base) {
+    public TLS12SocketFactory(SSLSocketFactory base) {
         this.delegate = base;
     }
 
@@ -76,13 +76,13 @@ public class Tls12SocketFactory extends SSLSocketFactory {
         return s;
     }
 
-    public static void enableTls12(OkHttpClient.Builder client) {
+    public static void enableTLS12(OkHttpClient.Builder client) {
         try {
             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
             X509TrustManager trustManager = getTrustManager();
             sslContext.init(null, new TrustManager[] { trustManager }, null);
 
-            client.sslSocketFactory(new Tls12SocketFactory(sslContext.getSocketFactory()), trustManager);
+            client.sslSocketFactory(new TLS12SocketFactory(sslContext.getSocketFactory()), trustManager);
 
             ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                     .tlsVersions(TlsVersion.TLS_1_2)

@@ -1,7 +1,7 @@
 package it.trade.api;
 
 
-import it.trade.factory.Tls12SocketFactory;
+import it.trade.factory.TLS12SocketFactory;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
 import it.trade.model.callback.DefaultCallbackWithErrorHandling;
@@ -65,7 +65,7 @@ public class TradeItApiClient {
         }
 
         if (forceTLS12) {
-            Tls12SocketFactory.enableTls12(httpClientBuilder);
+            TLS12SocketFactory.enableTLS12(httpClientBuilder);
         }
 
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
