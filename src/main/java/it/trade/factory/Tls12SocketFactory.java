@@ -76,7 +76,7 @@ public class Tls12SocketFactory extends SSLSocketFactory {
         return s;
     }
 
-    public static OkHttpClient.Builder enableTls12(OkHttpClient.Builder client) {
+    public static void enableTls12(OkHttpClient.Builder client) {
         try {
             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
             X509TrustManager trustManager = getTrustManager();
@@ -97,7 +97,6 @@ public class Tls12SocketFactory extends SSLSocketFactory {
         } catch (Exception exc) {
             LOGGER.error("OkHttpTLSCompat", "Error while setting TLS 1.2", exc);
         }
-        return client;
     }
 
     private static X509TrustManager getTrustManager() {

@@ -65,7 +65,7 @@ public class TradeItApiClient {
         }
 
         if (forceTLS12) {
-            httpClientBuilder = Tls12SocketFactory.enableTls12(httpClientBuilder);
+            Tls12SocketFactory.enableTls12(httpClientBuilder);
         }
 
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
