@@ -38,7 +38,7 @@ public class TradeItApiClientTest {
 
     @Before
     public void setUp() throws Exception {
-        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA);
+        apiClient = new TradeItApiClient("tradeit-test-api-key", TradeItEnvironment.QA, true);
     }
 
     @Test
