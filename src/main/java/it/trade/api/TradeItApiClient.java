@@ -189,10 +189,24 @@ public class TradeItApiClient {
         });
     }
 
-    public void answerSecurityQuestion(TradeItAnswerSecurityQuestionRequest request, Callback<TradeItAuthenticateResponse> callback) {
+    public void answerSecurityQuestion(TradeItAnswerSecurityQuestionRequest request, final Callback<TradeItAuthenticateResponse> callback) {
         request.serverUuid = serverUuid;
         injectSession(request);
-        tradeItApi.answerSecurityQuestion(request).enqueue(new PassthroughCallback<>(callback));
+        tradeItApi.answerSecurityQuestion(request).enqueue(new Callback<TradeItAuthenticateResponse>() {
+            public void onResponse(Call<TradeItAuthenticateResponse> call, Response<TradeItAuthenticateResponse> response) {
+                if (response.isSuccessful()) {
+                    TradeItAuthenticateResponse authenticateResponse = response.body();
+                    if (authenticateResponse.status == TradeItResponseStatus.SUCCESS || authenticateResponse.status == TradeItResponseStatus.INFORMATION_NEEDED) {
+                        sessionToken = authenticateResponse.sessionToken;
+                    }
+                }
+                callback.onResponse(call, response);
+            }
+            public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
+
     }
 
     public void keepSessionAlive(final TradeItCallback<TradeItResponse> callback) {
