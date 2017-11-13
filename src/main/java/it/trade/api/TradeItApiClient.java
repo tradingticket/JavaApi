@@ -118,8 +118,8 @@ public class TradeItApiClient {
         });
     }
 
-    public void getOAuthLoginPopupUrlForTokenUpdate(String broker, String userId, String deepLinkCallback, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(broker, deepLinkCallback, userId);
+    public void getOAuthLoginPopupUrlForTokenUpdate(String broker, String userId, String userToken, String deepLinkCallback, final TradeItCallback<String> callback) {
+        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(broker, deepLinkCallback, userId, userToken);
         tradeItApi.getOAuthLoginPopupURLForTokenUpdate(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForTokenUpdateResponse, String>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
