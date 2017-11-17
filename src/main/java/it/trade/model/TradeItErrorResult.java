@@ -8,7 +8,7 @@ public class TradeItErrorResult {
 
     protected TradeItErrorCode errorCode = null;
     protected String shortMessage = null;
-    protected List<String> longMessages = Arrays.asList("Trading is temporarily unavailable. Please try again in a few minutes.");
+    protected List<String> longMessages = Arrays.asList("Something went wrong. Please try again.");
     protected String systemMessage = "Unknown response sent from the server.";
     protected int httpCode = 200;
 
