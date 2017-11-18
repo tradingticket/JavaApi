@@ -1,6 +1,7 @@
 package it.trade.api;
 
 
+import com.google.gson.annotations.SerializedName;
 import it.trade.factory.TLS12SocketFactory;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
@@ -24,10 +25,15 @@ import java.util.concurrent.TimeUnit;
 
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
+	@SerializedName("requestInterceptor")
     protected Interceptor requestInterceptor;
+	@SerializedName("serverUuid")
     protected String serverUuid;
+	@SerializedName("sessionToken")
     protected String sessionToken;
+	@SerializedName("environment")
     protected TradeItEnvironment environment;
+	@SerializedName("apiKey")
     protected String apiKey;
 
     public TradeItApiClient(String apiKey, TradeItEnvironment environment) {
