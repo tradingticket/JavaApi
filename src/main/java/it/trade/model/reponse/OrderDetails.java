@@ -28,6 +28,10 @@ public class OrderDetails {
     @Expose
     public String orderValueLabel;
 
+    @SerializedName("orderCommissionLabel")
+    @Expose
+    public String orderCommissionLabel;
+
     @SerializedName("orderMessage")
     @Expose
     public String orderMessage;
@@ -85,6 +89,7 @@ public class OrderDetails {
                 ", orderExpiration='" + orderExpiration + '\'' +
                 ", orderPrice='" + orderPrice + '\'' +
                 ", orderValueLabel='" + orderValueLabel + '\'' +
+                ", orderCommissionLabel='" + orderCommissionLabel + '\'' +
                 ", orderMessage='" + orderMessage + '\'' +
                 ", lastPrice='" + lastPrice + '\'' +
                 ", bidPrice='" + bidPrice + '\'' +

@@ -632,6 +632,7 @@ class TradeItApiClientSpec extends Specification {
 				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderExpiration = "day"
 				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderQuantity = 1
 				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderPrice = "market"
+				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderCommissionLabel = "MyCommissionLabel"
 
 				Response<TradeItPreviewStockOrEtfOrderResponse> response = Response.success(tradeItPreviewStockOrEtfOrderResponse);
 				callback.onResponse(call, response);
@@ -664,6 +665,7 @@ class TradeItApiClientSpec extends Specification {
 			previewResponse.orderDetails.orderExpiration == "day"
 			previewResponse.orderDetails.orderQuantity == 1.0
 			previewResponse.orderDetails.orderPrice == "market"
+			previewResponse.orderDetails.orderCommissionLabel == "MyCommissionLabel"
 	}
 
 	def "previewStockOrEtfOrder handles an error response from trade it"() {
