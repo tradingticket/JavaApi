@@ -8,13 +8,13 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface TradeItApi {
-    @POST("api/v2/user/getOAuthLoginPopupUrlForWebApp")
+    @POST("api/v2/user/getOAuthLoginPopupUrlForWebApp?fidelityPilot=true")
     Call<TradeItOAuthLoginPopupUrlForWebAppResponse> getOAuthLoginPopupUrlForWebApp(@Body TradeItOAuthLoginPopupUrlForWebAppRequest request);
 
-    @POST("api/v2/user/getOAuthLoginPopupUrlForMobile")
+    @POST("api/v2/user/getOAuthLoginPopupUrlForMobile?fidelityPilot=true")
     Call<TradeItOAuthLoginPopupUrlForMobileResponse> getOAuthLoginPopupUrlForMobile(@Body TradeItOAuthLoginPopupUrlForMobileRequest request);
 
-    @POST("api/v2/user/getOAuthLoginPopupURLForTokenUpdate")
+    @POST("api/v2/user/getOAuthLoginPopupURLForTokenUpdate?fidelityPilot=true")
     Call<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> getOAuthLoginPopupURLForTokenUpdate(@Body TradeItOAuthLoginPopupUrlForTokenUpdateRequest request);
 
     @POST("api/v2/user/getOAuthAccessToken")
@@ -26,7 +26,7 @@ public interface TradeItApi {
     @POST("api/v2/user/oAuthUpdate")
     Call<TradeItLinkLoginResponse> relinkLogin(@Body TradeItRelinkLoginRequest request);
 
-    @POST("api/v2/preference/getBrokerList")
+    @POST("api/v2/preference/getBrokerList?fidelityPilot=true")
     Call<TradeItAvailableBrokersResponse> getAvailableBrokers(@Body TradeItRequestWithKey request);
 
     @POST("api/v2/user/oAuthDelete")
