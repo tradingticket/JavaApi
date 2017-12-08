@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Integration tests
@@ -110,6 +108,7 @@ public class TradeItApiClientTest {
             @Override
             protected void onSuccessResponse(Response<TradeItAuthenticateResponse> response) {
                 assertThat("accounts are returned", !response.body().accounts.isEmpty(), CoreMatchers.is(true));
+                assertThat("account order capabilities are returned", response.body().accounts.get(0).orderCapabilities.isEmpty(), CoreMatchers.is(false));
                 apiClient.getAccountOverview(response.body().accounts.get(0).accountNumber, new TradeItCallback<TradeItAccountOverviewResponse>() {
                     @Override
                     public void onSuccess(TradeItAccountOverviewResponse accountOverviewResponse) {
