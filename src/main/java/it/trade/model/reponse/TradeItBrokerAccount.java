@@ -18,6 +18,10 @@ public class TradeItBrokerAccount {
     @Expose
     public String accountBaseCurrency;
 
+    @SerializedName("userCanDisableMargin")
+    @Expose
+    public boolean userCanDisableMargin;
+
     @SerializedName("orderCapabilities")
     @Expose
     public List<OrderCapability> orderCapabilities;
@@ -28,6 +32,7 @@ public class TradeItBrokerAccount {
                 "accountNumber='" + accountNumber + '\'' +
                 ", name='" + name + '\'' +
                 ", accountBaseCurrency='" + accountBaseCurrency + '\'' +
+                ", userCanDisableMargin='" + userCanDisableMargin + '\'' +
                 ", orderCapabilities='" + orderCapabilities + '\'' +
                 '}';
     }
