@@ -145,21 +145,6 @@ public class TradeItApiClient {
         });
     }
 
-    /**
-     * @deprecated Use the new OAuth flow instead
-     */
-    @Deprecated
-    public void linkBrokerAccount(String userId, String userPassword, String broker, final TradeItCallback<TradeItLinkedLogin> callback) {
-        final TradeItLinkLoginRequest request = new TradeItLinkLoginRequest(userId, userPassword, broker);
-        tradeItApi.linkLogin(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItLinkLoginResponse, TradeItLinkedLogin>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItLinkLoginResponse> response) {
-                TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin(request, response.body());
-                callback.onSuccess(linkedLogin);
-            }
-        });
-    }
-
     public void unlinkBrokerAccount(TradeItLinkedLogin linkedLogin, final TradeItCallback callback) {
         TradeItUnlinkLoginRequest request = new TradeItUnlinkLoginRequest(linkedLogin);
         tradeItApi.unlinkLogin(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
