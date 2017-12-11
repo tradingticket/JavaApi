@@ -453,10 +453,8 @@ class TradeItApiClientSpec extends Specification {
 			account1.accountNumber = "My account number 1"
 			account1.name = "My account name 1"
 
-			TradeItBrokerAccount.OrderCapability orderCapability = new TradeItBrokerAccount.OrderCapability()
-			TradeItBrokerAccount.OrderCapability.DisplayLabelValue action = new TradeItBrokerAccount.OrderCapability.DisplayLabelValue()
-			action.displayLabel = "Buy"
-			action.value = "buy"
+			OrderCapability orderCapability = new OrderCapability()
+			DisplayLabelValue action = new DisplayLabelValue("Buy", "buy")
 			orderCapability.instrument = Instrument.EQUITIES
 			orderCapability.actions = [action]
 			account1.orderCapabilities = [orderCapability]
