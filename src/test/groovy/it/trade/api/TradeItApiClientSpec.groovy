@@ -335,7 +335,7 @@ class TradeItApiClientSpec extends Specification {
 
 		when: "calling getOAuthLoginPopupForTokenUpdateUrl"
 			String oAuthUrlResult = null
-			apiClient.getOAuthLoginPopupUrlForTokenUpdate("My broker 1", "userId", "my internal app callback", new TradeItCallback<String>() {
+			apiClient.getOAuthLoginPopupUrlForTokenUpdate("My broker 1", "userId", "userToken", "my internal app callback", new TradeItCallback<String>() {
 
 				@Override
 				void onSuccess(String oAuthUrl) {
