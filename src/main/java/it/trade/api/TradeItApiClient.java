@@ -1,6 +1,7 @@
 package it.trade.api;
 
 
+import com.google.gson.annotations.SerializedName;
 import it.trade.factory.TLS12SocketFactory;
 import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
@@ -24,10 +25,15 @@ import java.util.concurrent.TimeUnit;
 
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
+	@SerializedName("requestInterceptor")
     protected Interceptor requestInterceptor;
+	@SerializedName("serverUuid")
     protected String serverUuid;
+	@SerializedName("sessionToken")
     protected String sessionToken;
+	@SerializedName("environment")
     protected TradeItEnvironment environment;
+	@SerializedName("apiKey")
     protected String apiKey;
 
     public TradeItApiClient(String apiKey, TradeItEnvironment environment) {
@@ -118,8 +124,8 @@ public class TradeItApiClient {
         });
     }
 
-    public void getOAuthLoginPopupUrlForTokenUpdate(String broker, String userId, String deepLinkCallback, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(broker, deepLinkCallback, userId);
+    public void getOAuthLoginPopupUrlForTokenUpdate(String broker, String userId, String userToken, String deepLinkCallback, final TradeItCallback<String> callback) {
+        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(broker, deepLinkCallback, userId, userToken);
         tradeItApi.getOAuthLoginPopupURLForTokenUpdate(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForTokenUpdateResponse, String>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
@@ -133,21 +139,6 @@ public class TradeItApiClient {
         tradeItApi.getOAuthAccessToken(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthAccessTokenResponse, TradeItLinkedLogin>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthAccessTokenResponse> response) {
-                TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin(request, response.body());
-                callback.onSuccess(linkedLogin);
-            }
-        });
-    }
-
-    /**
-     * @deprecated Use the new OAuth flow instead
-     */
-    @Deprecated
-    public void linkBrokerAccount(String userId, String userPassword, String broker, final TradeItCallback<TradeItLinkedLogin> callback) {
-        final TradeItLinkLoginRequest request = new TradeItLinkLoginRequest(userId, userPassword, broker);
-        tradeItApi.linkLogin(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItLinkLoginResponse, TradeItLinkedLogin>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItLinkLoginResponse> response) {
                 TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin(request, response.body());
                 callback.onSuccess(linkedLogin);
             }
@@ -189,10 +180,24 @@ public class TradeItApiClient {
         });
     }
 
-    public void answerSecurityQuestion(TradeItAnswerSecurityQuestionRequest request, Callback<TradeItAuthenticateResponse> callback) {
+    public void answerSecurityQuestion(TradeItAnswerSecurityQuestionRequest request, final Callback<TradeItAuthenticateResponse> callback) {
         request.serverUuid = serverUuid;
         injectSession(request);
-        tradeItApi.answerSecurityQuestion(request).enqueue(new PassthroughCallback<>(callback));
+        tradeItApi.answerSecurityQuestion(request).enqueue(new Callback<TradeItAuthenticateResponse>() {
+            public void onResponse(Call<TradeItAuthenticateResponse> call, Response<TradeItAuthenticateResponse> response) {
+                if (response.isSuccessful()) {
+                    TradeItAuthenticateResponse authenticateResponse = response.body();
+                    if (authenticateResponse.status == TradeItResponseStatus.SUCCESS || authenticateResponse.status == TradeItResponseStatus.INFORMATION_NEEDED) {
+                        sessionToken = authenticateResponse.sessionToken;
+                    }
+                }
+                callback.onResponse(call, response);
+            }
+            public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
+
     }
 
     public void keepSessionAlive(final TradeItCallback<TradeItResponse> callback) {

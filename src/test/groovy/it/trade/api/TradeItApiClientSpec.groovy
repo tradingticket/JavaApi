@@ -335,7 +335,7 @@ class TradeItApiClientSpec extends Specification {
 
 		when: "calling getOAuthLoginPopupForTokenUpdateUrl"
 			String oAuthUrlResult = null
-			apiClient.getOAuthLoginPopupUrlForTokenUpdate("My broker 1", "userId", "my internal app callback", new TradeItCallback<String>() {
+			apiClient.getOAuthLoginPopupUrlForTokenUpdate("My broker 1", "userId", "userToken", "my internal app callback", new TradeItCallback<String>() {
 
 				@Override
 				void onSuccess(String oAuthUrl) {
@@ -448,11 +448,17 @@ class TradeItApiClientSpec extends Specification {
 
 		and: "A successful response from trade it"
 			int successCallBackCount = 0
-			int securityQuestionCallbackCount = 0
 			int errorCallBackCount = 0
-			TradeItBrokerAccount account1 = new TradeItBrokerAccount();
+			TradeItBrokerAccount account1 = new TradeItBrokerAccount()
 			account1.accountNumber = "My account number 1"
 			account1.name = "My account name 1"
+
+			OrderCapability orderCapability = new OrderCapability()
+			DisplayLabelValue action = new DisplayLabelValue("Buy", "buy")
+			orderCapability.instrument = Instrument.EQUITIES
+			orderCapability.actions = [action]
+			account1.orderCapabilities = [orderCapability]
+
 			TradeItBrokerAccount account2 = new TradeItBrokerAccount();
 			account2.accountNumber = "My account number 2"
 			account2.name = "My account name 2"
@@ -467,7 +473,7 @@ class TradeItApiClientSpec extends Specification {
 				tradeItAuthenticateResponse.status = TradeItResponseStatus.SUCCESS
 				tradeItAuthenticateResponse.accounts = [account1, account2]
 				Response<TradeItAuthenticateResponse> response = Response.success(tradeItAuthenticateResponse);
-				callback.onResponse(call, response);
+				callback.onResponse(call, response)
 			}
 
 		when: "calling authenticate"
@@ -492,6 +498,7 @@ class TradeItApiClientSpec extends Specification {
 
 		and: "expects a list of TradeItLinkedBrokerAccount"
 			accountsResult == [account1, account2]
+
 	}
 
 	def "authenticate handles a successful response with a security question from trade it"() {
@@ -632,6 +639,7 @@ class TradeItApiClientSpec extends Specification {
 				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderExpiration = "day"
 				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderQuantity = 1
 				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderPrice = "market"
+				tradeItPreviewStockOrEtfOrderResponse.orderDetails.orderCommissionLabel = "MyCommissionLabel"
 
 				Response<TradeItPreviewStockOrEtfOrderResponse> response = Response.success(tradeItPreviewStockOrEtfOrderResponse);
 				callback.onResponse(call, response);
@@ -664,6 +672,7 @@ class TradeItApiClientSpec extends Specification {
 			previewResponse.orderDetails.orderExpiration == "day"
 			previewResponse.orderDetails.orderQuantity == 1.0
 			previewResponse.orderDetails.orderPrice == "market"
+			previewResponse.orderDetails.orderCommissionLabel == "MyCommissionLabel"
 	}
 
 	def "previewStockOrEtfOrder handles an error response from trade it"() {

@@ -1,16 +1,27 @@
 package it.trade.model;
 
+import com.google.gson.annotations.SerializedName;
 import it.trade.model.reponse.TradeItErrorCode;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class TradeItErrorResult {
 
+	@SerializedName("errorCode")
     protected TradeItErrorCode errorCode = null;
-    protected String shortMessage = null;
-    protected List<String> longMessages = Arrays.asList("Trading is temporarily unavailable. Please try again in a few minutes.");
-    protected String systemMessage = "Unknown response sent from the server.";
-    protected int httpCode = 200;
+
+	@SerializedName("shortMessage")
+	protected String shortMessage = null;
+
+	@SerializedName("longMessages")
+	protected List<String> longMessages = Arrays.asList("Something went wrong. Please try again.");
+
+	@SerializedName("systemMessage")
+	protected String systemMessage = "Unknown response sent from the server.";
+
+	@SerializedName("httpCode")
+	protected int httpCode = 200;
 
      public TradeItErrorResult(TradeItErrorCode errorCode, String shortMessage, List<String> longMessages) {
         this.errorCode = errorCode;
