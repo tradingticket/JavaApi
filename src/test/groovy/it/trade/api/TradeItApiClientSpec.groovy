@@ -660,7 +660,7 @@ class TradeItApiClientSpec extends Specification {
 				}
 			})
 
-		then: "expect the sucess callback called"
+		then: "expect the success callback called"
 			successfulCallbackCount == 1
 			errorCallbackCount == 0
 
