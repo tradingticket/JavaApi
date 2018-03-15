@@ -31,7 +31,15 @@ public class TradeItPosition {
 
     @SerializedName("todayGainLossDollar")
     @Expose
+    @Deprecated
+    /**
+     * @deprecated use todayGainLossAbsolute instead
+     */
     public Double todayGainLossDollar;
+
+    @SerializedName("todayGainLossAbsolute")
+    @Expose
+    public Double todayGainLossAbsolute;
 
     @SerializedName("todayGainLossPercentage")
     @Expose
@@ -39,11 +47,27 @@ public class TradeItPosition {
 
     @SerializedName("totalGainLossDollar")
     @Expose
+    @Deprecated
+    /**
+     * @deprecated use totalGainLossAbsolute instead
+     */
     public Double totalGainLossDollar;
+
+    @SerializedName("totalGainLossAbsolute")
+    @Expose
+    public Double totalGainLossAbsolute;
 
     @SerializedName("totalGainLossPercentage")
     @Expose
     public Double totalGainLossPercentage;
+
+    @SerializedName("exchange")
+    @Expose
+    public String exchange;
+
+    @SerializedName("currency")
+    @Expose
+    public String currency;
 
     @Override
     public String toString() {
@@ -55,9 +79,13 @@ public class TradeItPosition {
                 ", symbol='" + symbol + '\'' +
                 ", symbolClass='" + symbolClass + '\'' +
                 ", todayGainLossDollar=" + todayGainLossDollar +
+                ", todayGainLossAbsolute=" + todayGainLossAbsolute +
                 ", todayGainLossPercentage=" + todayGainLossPercentage +
                 ", totalGainLossDollar=" + totalGainLossDollar +
+                ", totalGainLossAbsolute=" + totalGainLossAbsolute +
                 ", totalGainLossPercentage=" + totalGainLossPercentage +
+                ", exchange='" + exchange + '\'' +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 
@@ -66,28 +94,28 @@ public class TradeItPosition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TradeItPosition position = (TradeItPosition) o;
+        TradeItPosition that = (TradeItPosition) o;
 
-        if (costbasis != null ? !costbasis.equals(position.costbasis) : position.costbasis != null)
+        if (costbasis != null ? !costbasis.equals(that.costbasis) : that.costbasis != null) return false;
+        if (holdingType != null ? !holdingType.equals(that.holdingType) : that.holdingType != null) return false;
+        if (lastPrice != null ? !lastPrice.equals(that.lastPrice) : that.lastPrice != null) return false;
+        if (quantity != null ? !quantity.equals(that.quantity) : that.quantity != null) return false;
+        if (symbol != null ? !symbol.equals(that.symbol) : that.symbol != null) return false;
+        if (symbolClass != null ? !symbolClass.equals(that.symbolClass) : that.symbolClass != null) return false;
+        if (todayGainLossDollar != null ? !todayGainLossDollar.equals(that.todayGainLossDollar) : that.todayGainLossDollar != null)
             return false;
-        if (holdingType != null ? !holdingType.equals(position.holdingType) : position.holdingType != null)
+        if (todayGainLossAbsolute != null ? !todayGainLossAbsolute.equals(that.todayGainLossAbsolute) : that.todayGainLossAbsolute != null)
             return false;
-        if (lastPrice != null ? !lastPrice.equals(position.lastPrice) : position.lastPrice != null)
+        if (todayGainLossPercentage != null ? !todayGainLossPercentage.equals(that.todayGainLossPercentage) : that.todayGainLossPercentage != null)
             return false;
-        if (quantity != null ? !quantity.equals(position.quantity) : position.quantity != null)
+        if (totalGainLossDollar != null ? !totalGainLossDollar.equals(that.totalGainLossDollar) : that.totalGainLossDollar != null)
             return false;
-        if (symbol != null ? !symbol.equals(position.symbol) : position.symbol != null)
+        if (totalGainLossAbsolute != null ? !totalGainLossAbsolute.equals(that.totalGainLossAbsolute) : that.totalGainLossAbsolute != null)
             return false;
-        if (symbolClass != null ? !symbolClass.equals(position.symbolClass) : position.symbolClass != null)
+        if (totalGainLossPercentage != null ? !totalGainLossPercentage.equals(that.totalGainLossPercentage) : that.totalGainLossPercentage != null)
             return false;
-        if (todayGainLossDollar != null ? !todayGainLossDollar.equals(position.todayGainLossDollar) : position.todayGainLossDollar != null)
-            return false;
-        if (todayGainLossPercentage != null ? !todayGainLossPercentage.equals(position.todayGainLossPercentage) : position.todayGainLossPercentage != null)
-            return false;
-        if (totalGainLossDollar != null ? !totalGainLossDollar.equals(position.totalGainLossDollar) : position.totalGainLossDollar != null)
-            return false;
-        return totalGainLossPercentage != null ? totalGainLossPercentage.equals(position.totalGainLossPercentage) : position.totalGainLossPercentage == null;
-
+        if (exchange != null ? !exchange.equals(that.exchange) : that.exchange != null) return false;
+        return currency != null ? currency.equals(that.currency) : that.currency == null;
     }
 
     @Override
@@ -99,9 +127,13 @@ public class TradeItPosition {
         result = 31 * result + (symbol != null ? symbol.hashCode() : 0);
         result = 31 * result + (symbolClass != null ? symbolClass.hashCode() : 0);
         result = 31 * result + (todayGainLossDollar != null ? todayGainLossDollar.hashCode() : 0);
+        result = 31 * result + (todayGainLossAbsolute != null ? todayGainLossAbsolute.hashCode() : 0);
         result = 31 * result + (todayGainLossPercentage != null ? todayGainLossPercentage.hashCode() : 0);
         result = 31 * result + (totalGainLossDollar != null ? totalGainLossDollar.hashCode() : 0);
+        result = 31 * result + (totalGainLossAbsolute != null ? totalGainLossAbsolute.hashCode() : 0);
         result = 31 * result + (totalGainLossPercentage != null ? totalGainLossPercentage.hashCode() : 0);
+        result = 31 * result + (exchange != null ? exchange.hashCode() : 0);
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
         return result;
     }
 }
