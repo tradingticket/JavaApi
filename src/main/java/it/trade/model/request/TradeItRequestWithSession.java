@@ -3,7 +3,7 @@ package it.trade.model.request;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TradeItRequestWithSession extends TradeItRequestWithKey {
+public class TradeItRequestWithSession {
     @SerializedName("token")
     @Expose
     public String sessionToken;
