@@ -13,17 +13,13 @@ public class TradeItOAuthLoginPopupUrlForTokenUpdateRequest extends TradeItOAuth
     @Expose
     public String userToken;
 
-    public TradeItOAuthLoginPopupUrlForTokenUpdateRequest(String broker, String interAppAddressCallback, String userId, String userToken) {
-        super(broker, interAppAddressCallback);
+    public TradeItOAuthLoginPopupUrlForTokenUpdateRequest(String apiKey, String broker, String interAppAddressCallback, String userId, String userToken) {
+        super(apiKey, broker, interAppAddressCallback);
         this.userId = userId;
         this.userToken = userToken;
     }
 
-    public TradeItOAuthLoginPopupUrlForTokenUpdateRequest(String apiKey, String broker, String interAppAddressCallback, String userId, String userToken) {
-        super(broker, interAppAddressCallback);
-        this.userId = userId;
-        this.userToken = userToken;
-    }
+    private TradeItOAuthLoginPopupUrlForTokenUpdateRequest() {}
 
     @Override
     public String toString() {

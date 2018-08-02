@@ -20,10 +20,9 @@ import spock.lang.Specification
 class TradeItApiClientSpec extends Specification {
 
 	TradeItApi tradeItApi = Mock(TradeItApi)
-	TradeItApiClient apiClient = new TradeItApiClient(tradeItApi)
+	TradeItApiClient apiClient = new TradeItApiClient("My API Key", tradeItApi)
 
 	void setup() {
-		TradeItRequestWithKey.API_KEY = "My Api Key"
 	}
 
 	def "GetAvailableBrokers handles a successful response from trade it"() {

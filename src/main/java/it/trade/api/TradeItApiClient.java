@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
 
-
 	@SerializedName("requestInterceptor")
     protected Interceptor requestInterceptor;
 	@SerializedName("serverUuid")
@@ -56,7 +55,6 @@ public class TradeItApiClient {
     public TradeItApiClient(String apiKey, TradeItEnvironment environment, Interceptor requestInterceptor, boolean forceTLS12) {
         this.environment = environment;
         this.apiKey = apiKey;
-        TradeItRequestWithKey.API_KEY = apiKey; // TODO: REPLACE THIS WITH NEW APIKEY CONSTRUCTOR FOR EACH REQUEST
         this.tradeItApi = createTradeItApi(environment, requestInterceptor, forceTLS12);
     }
 
@@ -86,7 +84,8 @@ public class TradeItApiClient {
         return retrofit.create(TradeItApi.class);
     }
 
-    protected TradeItApiClient(TradeItApi tradeItApi) { //used for unit tests
+    protected TradeItApiClient(String apiKey, TradeItApi tradeItApi) { //used for unit tests
+        this.apiKey = apiKey;
         this.tradeItApi = tradeItApi;
     }
 
@@ -97,7 +96,7 @@ public class TradeItApiClient {
     }
 
     public void getAvailableBrokers(final TradeItCallback<List<Broker>> callback) {
-        TradeItRequestWithKey request = new TradeItRequestWithKey();
+        TradeItRequestWithKey request = new TradeItRequestWithKey(this.apiKey);
         tradeItApi.getAvailableBrokers(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItAvailableBrokersResponse, List<Broker>>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
@@ -107,7 +106,7 @@ public class TradeItApiClient {
     }
 
     public void getOAuthLoginPopupUrlForMobile(String broker, String deepLinkCallback, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForMobileRequest request = new TradeItOAuthLoginPopupUrlForMobileRequest(broker, deepLinkCallback);
+        TradeItOAuthLoginPopupUrlForMobileRequest request = new TradeItOAuthLoginPopupUrlForMobileRequest(this.apiKey, broker, deepLinkCallback);
         tradeItApi.getOAuthLoginPopupUrlForMobile(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForMobileResponse, String>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForMobileResponse> response) {
@@ -117,7 +116,7 @@ public class TradeItApiClient {
     }
 
     public void getOAuthLoginPopupUrlForWebApp(String broker, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForWebAppRequest request = new TradeItOAuthLoginPopupUrlForWebAppRequest(broker);
+        TradeItOAuthLoginPopupUrlForWebAppRequest request = new TradeItOAuthLoginPopupUrlForWebAppRequest(this.apiKey, broker);
         tradeItApi.getOAuthLoginPopupUrlForWebApp(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForWebAppResponse, String>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForWebAppResponse> response) {
@@ -127,7 +126,7 @@ public class TradeItApiClient {
     }
 
     public void getOAuthLoginPopupUrlForTokenUpdate(String broker, String userId, String userToken, String deepLinkCallback, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(broker, deepLinkCallback, userId, userToken);
+        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(this.apiKey, broker, deepLinkCallback, userId, userToken);
         tradeItApi.getOAuthLoginPopupURLForTokenUpdate(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForTokenUpdateResponse, String>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
@@ -137,7 +136,7 @@ public class TradeItApiClient {
     }
 
     public void linkBrokerWithOauthVerifier(String oAuthVerifier, final TradeItCallback<TradeItLinkedLogin> callback) {
-        final TradeItOAuthAccessTokenRequest request = new TradeItOAuthAccessTokenRequest(oAuthVerifier);
+        final TradeItOAuthAccessTokenRequest request = new TradeItOAuthAccessTokenRequest(this.apiKey, oAuthVerifier);
         tradeItApi.getOAuthAccessToken(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthAccessTokenResponse, TradeItLinkedLogin>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOAuthAccessTokenResponse> response) {
@@ -148,7 +147,7 @@ public class TradeItApiClient {
     }
 
     public void unlinkBrokerAccount(TradeItLinkedLogin linkedLogin, final TradeItCallback callback) {
-        TradeItUnlinkLoginRequest request = new TradeItUnlinkLoginRequest(linkedLogin);
+        TradeItUnlinkLoginRequest request = new TradeItUnlinkLoginRequest(this.apiKey, linkedLogin);
         tradeItApi.unlinkLogin(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItResponse> response) {
@@ -162,7 +161,7 @@ public class TradeItApiClient {
             serverUuid = UUID.randomUUID().toString();
         }
 
-        TradeItAuthenticateRequest authenticateRequest = new TradeItAuthenticateRequest(linkedLogin);
+        TradeItAuthenticateRequest authenticateRequest = new TradeItAuthenticateRequest(this.apiKey, linkedLogin);
         authenticateRequest.serverUuid = serverUuid;
 
         tradeItApi.authenticate(authenticateRequest).enqueue(new Callback<TradeItAuthenticateResponse>() {

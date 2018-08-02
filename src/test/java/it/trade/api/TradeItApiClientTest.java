@@ -102,7 +102,7 @@ public class TradeItApiClientTest {
     }
 
     @Test
-    public void authenticateDummyWithExistingUserIdAndToken() throws Exception {
+    public void authenticateDummyAndFetchBalanceWithExistingUserIdAndToken() throws Exception {
         TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin("Dummy", QA_DUMMY_USER_ID, QA_DUMMY_USER_TOKEN);
         apiClient.authenticate(linkedLogin, new AuthenticationCallback<TradeItAuthenticateResponse, List<TradeItBrokerAccount>>(null, apiClient) {
             @Override
