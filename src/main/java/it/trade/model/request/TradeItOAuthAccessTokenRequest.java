@@ -14,6 +14,11 @@ public class TradeItOAuthAccessTokenRequest extends TradeItRequestWithKey {
         this.oAuthVerifier = oAuthVerifier;
     }
 
+    public TradeItOAuthAccessTokenRequest(String apiKey, String oAuthVerifier) {
+        super(apiKey);
+        this.oAuthVerifier = oAuthVerifier;
+    }
+
     @Override
     public String toString() {
         return "TradeItOAuthAccessTokenRequest{" +

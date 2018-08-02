@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 public class TradeItApiClient {
     protected transient TradeItApi tradeItApi;
+
+
 	@SerializedName("requestInterceptor")
     protected Interceptor requestInterceptor;
 	@SerializedName("serverUuid")
@@ -54,7 +56,7 @@ public class TradeItApiClient {
     public TradeItApiClient(String apiKey, TradeItEnvironment environment, Interceptor requestInterceptor, boolean forceTLS12) {
         this.environment = environment;
         this.apiKey = apiKey;
-        TradeItRequestWithKey.API_KEY = apiKey;
+        TradeItRequestWithKey.API_KEY = apiKey; // TODO: REPLACE THIS WITH NEW APIKEY CONSTRUCTOR FOR EACH REQUEST
         this.tradeItApi = createTradeItApi(environment, requestInterceptor, forceTLS12);
     }
 

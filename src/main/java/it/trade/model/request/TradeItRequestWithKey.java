@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TradeItRequestWithKey {
-    public static String API_KEY;
+    public static String API_KEY; // TODO: DELETE THIS
 
     @SerializedName("apiKey")
     @Expose
@@ -13,6 +13,10 @@ public class TradeItRequestWithKey {
 
     public TradeItRequestWithKey() {
         this.apiKey = API_KEY;
+    }
+
+    public TradeItRequestWithKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     @Override

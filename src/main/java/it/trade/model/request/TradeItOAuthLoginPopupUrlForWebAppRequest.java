@@ -14,6 +14,10 @@ public class TradeItOAuthLoginPopupUrlForWebAppRequest extends TradeItRequestWit
         this.broker = broker;
     }
 
+    public TradeItOAuthLoginPopupUrlForWebAppRequest(String apiKey, String broker) {
+        super(apiKey);
+        this.broker = broker;
+    }
     @Override
     public String toString() {
         return "TradeItOAuthLoginPopupUrlForWebAppRequest{" +

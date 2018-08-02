@@ -16,6 +16,11 @@ public class TradeItOAuthLoginPopupUrlForMobileRequest extends TradeItOAuthLogin
         this.interAppAddressCallback = interAppAddressCallback;
     }
 
+    public TradeItOAuthLoginPopupUrlForMobileRequest(String apiKey, String broker, String interAppAddressCallback) {
+        super(apiKey, broker);
+        this.interAppAddressCallback = interAppAddressCallback;
+    }
+
     @Override
     public String toString() {
         return "TradeItOAuthLoginPopupUrlForMobileRequest{" +

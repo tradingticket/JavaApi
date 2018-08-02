@@ -19,6 +19,12 @@ public class TradeItOAuthLoginPopupUrlForTokenUpdateRequest extends TradeItOAuth
         this.userToken = userToken;
     }
 
+    public TradeItOAuthLoginPopupUrlForTokenUpdateRequest(String apiKey, String broker, String interAppAddressCallback, String userId, String userToken) {
+        super(broker, interAppAddressCallback);
+        this.userId = userId;
+        this.userToken = userToken;
+    }
+
     @Override
     public String toString() {
         return "TradeItOAuthLoginPopupUrlForTokenUpdateRequest{" +
