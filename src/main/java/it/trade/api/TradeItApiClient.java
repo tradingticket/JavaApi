@@ -76,10 +76,10 @@ public class TradeItApiClient {
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(environment.getBaseUrl())
-                .client(httpClientBuilder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            .baseUrl(environment.getBaseUrl())
+            .client(httpClientBuilder.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
         return retrofit.create(TradeItApi.class);
     }
