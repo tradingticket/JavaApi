@@ -2,39 +2,31 @@ package it.trade.api;
 
 
 import com.google.gson.annotations.SerializedName;
-import it.trade.factory.TLS12SocketFactory;
-import it.trade.model.TradeItErrorResult;
 import it.trade.model.callback.AuthenticationCallback;
-import it.trade.model.callback.DefaultCallbackWithErrorHandling;
-import it.trade.model.callback.PreviewTradeCallback;
 import it.trade.model.callback.TradeItCallback;
 import it.trade.model.reponse.*;
 import it.trade.model.reponse.TradeItAvailableBrokersResponse.Broker;
 import it.trade.model.request.*;
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class TradeItApiClient {
-    protected transient TradeItApi tradeItApi;
+    protected transient StatelessTradeItApiClient statelessTradeItApiClient;
 
-	@SerializedName("requestInterceptor")
+    @SerializedName("requestInterceptor")
     protected Interceptor requestInterceptor;
-	@SerializedName("serverUuid")
+    @SerializedName("serverUuid")
     protected String serverUuid;
-	@SerializedName("sessionToken")
+    @SerializedName("sessionToken")
     protected String sessionToken;
-	@SerializedName("environment")
+    @SerializedName("environment")
     protected TradeItEnvironment environment;
-	@SerializedName("apiKey")
+    @SerializedName("apiKey")
     protected String apiKey;
 
     public TradeItApiClient(String apiKey, TradeItEnvironment environment) {
@@ -52,41 +44,28 @@ public class TradeItApiClient {
         this(apiKey, environment, requestInterceptor, false);
     }
 
-    public TradeItApiClient(String apiKey, TradeItEnvironment environment, Interceptor requestInterceptor, boolean forceTLS12) {
+    public TradeItApiClient(
+            String apiKey,
+            TradeItEnvironment environment,
+            Interceptor requestInterceptor,
+            boolean forceTLS12) {
+        this.apiKey = apiKey;
         this.environment = environment;
-        this.apiKey = apiKey;
-        this.tradeItApi = createTradeItApi(environment, requestInterceptor, forceTLS12);
+        this.requestInterceptor = requestInterceptor;
+        this.statelessTradeItApiClient = createStatelessTradeItApiClient(environment, requestInterceptor, forceTLS12);
     }
 
-    protected TradeItApi createTradeItApi(TradeItEnvironment environment, final Interceptor requestInterceptor, boolean forceTLS12) {
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient().newBuilder();
-
-        httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
-        httpClientBuilder.readTimeout(30, TimeUnit.SECONDS);
-
-        if (requestInterceptor != null) {
-            this.requestInterceptor = requestInterceptor;
-            httpClientBuilder.networkInterceptors().add(requestInterceptor);
-        }
-
-        if (forceTLS12) {
-            TLS12SocketFactory.enableTLS12(httpClientBuilder);
-        }
-
-//        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(environment.getBaseUrl())
-                .client(httpClientBuilder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        return retrofit.create(TradeItApi.class);
+    protected StatelessTradeItApiClient createStatelessTradeItApiClient(
+            TradeItEnvironment environment,
+            final Interceptor requestInterceptor,
+            boolean forceTLS12
+    ) {
+        return new StatelessTradeItApiClient(environment, requestInterceptor, forceTLS12);
     }
 
-    protected TradeItApiClient(String apiKey, TradeItApi tradeItApi) { //used for unit tests
+    protected TradeItApiClient(String apiKey, StatelessTradeItApiClient statelessTradeItApiClient) { //used for unit tests
         this.apiKey = apiKey;
-        this.tradeItApi = tradeItApi;
+        this.statelessTradeItApiClient = statelessTradeItApiClient;
     }
 
     protected TradeItApiClient() {}
@@ -96,231 +75,164 @@ public class TradeItApiClient {
     }
 
     public void getAvailableBrokers(final TradeItCallback<List<Broker>> callback) {
-        TradeItRequestWithKey request = new TradeItRequestWithKey(this.apiKey);
-        tradeItApi.getAvailableBrokers(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItAvailableBrokersResponse, List<Broker>>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
-                callback.onSuccess(response.body().brokerList);
-            }
-        });
+        this.statelessTradeItApiClient.getAvailableBrokers(this.apiKey, callback);
     }
 
-    public void getOAuthLoginPopupUrlForMobile(String broker, String deepLinkCallback, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForMobileRequest request = new TradeItOAuthLoginPopupUrlForMobileRequest(this.apiKey, broker, deepLinkCallback);
-        tradeItApi.getOAuthLoginPopupUrlForMobile(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForMobileResponse, String>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForMobileResponse> response) {
-                callback.onSuccess(response.body().oAuthURL);
-            }
-        });
+    public void getOAuthLoginPopupUrlForMobile(
+            String broker,
+            String deepLinkCallback,
+            final TradeItCallback<String> callback
+    ) {
+        this.statelessTradeItApiClient.getOAuthLoginPopupUrlForMobile(this.apiKey, broker, deepLinkCallback, callback);
     }
 
     public void getOAuthLoginPopupUrlForWebApp(String broker, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForWebAppRequest request = new TradeItOAuthLoginPopupUrlForWebAppRequest(this.apiKey, broker);
-        tradeItApi.getOAuthLoginPopupUrlForWebApp(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForWebAppResponse, String>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForWebAppResponse> response) {
-                callback.onSuccess(response.body().oAuthURL);
-            }
-        });
+        this.statelessTradeItApiClient.getOAuthLoginPopupUrlForWebApp(this.apiKey, broker, callback);
     }
 
-    public void getOAuthLoginPopupUrlForTokenUpdate(String broker, String userId, String userToken, String deepLinkCallback, final TradeItCallback<String> callback) {
-        TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(this.apiKey, broker, deepLinkCallback, userId, userToken);
-        tradeItApi.getOAuthLoginPopupURLForTokenUpdate(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForTokenUpdateResponse, String>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
-                callback.onSuccess(response.body().oAuthURL);
-            }
-        });
+    public void getOAuthLoginPopupUrlForTokenUpdate(
+            String broker,
+            String userId,
+            String userToken,
+            String deepLinkCallback,
+            final TradeItCallback<String> callback
+    ) {
+        this.statelessTradeItApiClient.getOAuthLoginPopupUrlForTokenUpdate(
+                this.apiKey,
+                broker,
+                userId,
+                userToken,
+                deepLinkCallback,
+                callback
+        );
     }
 
     public void linkBrokerWithOauthVerifier(String oAuthVerifier, final TradeItCallback<TradeItLinkedLogin> callback) {
-        final TradeItOAuthAccessTokenRequest request = new TradeItOAuthAccessTokenRequest(this.apiKey, oAuthVerifier);
-        tradeItApi.getOAuthAccessToken(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOAuthAccessTokenResponse, TradeItLinkedLogin>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOAuthAccessTokenResponse> response) {
-                TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin(request, response.body());
-                callback.onSuccess(linkedLogin);
-            }
-        });
+        this.statelessTradeItApiClient.linkBrokerWithOauthVerifier(this.apiKey, oAuthVerifier, callback);
     }
 
     public void unlinkBrokerAccount(TradeItLinkedLogin linkedLogin, final TradeItCallback callback) {
-        TradeItUnlinkLoginRequest request = new TradeItUnlinkLoginRequest(this.apiKey, linkedLogin);
-        tradeItApi.unlinkLogin(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItResponse> response) {
-                callback.onSuccess(response.body());
-            }
-        });
+        this.statelessTradeItApiClient.unlinkBrokerAccount(this.apiKey, linkedLogin, callback);
     }
 
-    public void authenticate(TradeItLinkedLogin linkedLogin, final AuthenticationCallback<TradeItAuthenticateResponse, ?> callback) {
+    public void authenticate(
+            TradeItLinkedLogin linkedLogin,
+            final AuthenticationCallback<TradeItAuthenticateResponse, ?> callback
+    ) {
         if (serverUuid == null) {
             serverUuid = UUID.randomUUID().toString();
         }
 
         TradeItAuthenticateRequest authenticateRequest = new TradeItAuthenticateRequest(this.apiKey, linkedLogin);
-        authenticateRequest.serverUuid = serverUuid;
-
-        tradeItApi.authenticate(authenticateRequest).enqueue(new Callback<TradeItAuthenticateResponse>() {
-            public void onResponse(Call<TradeItAuthenticateResponse> call, Response<TradeItAuthenticateResponse> response) {
-                if (response.isSuccessful()) {
-                    TradeItAuthenticateResponse authenticateResponse = response.body();
-                    if (authenticateResponse.status == TradeItResponseStatus.SUCCESS || authenticateResponse.status == TradeItResponseStatus.INFORMATION_NEEDED) {
-                        sessionToken = authenticateResponse.sessionToken;
+        this.statelessTradeItApiClient.tradeItApi.authenticate(authenticateRequest).enqueue(
+            new Callback<TradeItAuthenticateResponse>() {
+                public void onResponse(
+                        Call<TradeItAuthenticateResponse> call,
+                        Response<TradeItAuthenticateResponse> response
+                ) {
+                    if (response.isSuccessful()) {
+                        TradeItAuthenticateResponse authenticateResponse = response.body();
+                        if (authenticateResponse.status == TradeItResponseStatus.SUCCESS
+                                || authenticateResponse.status == TradeItResponseStatus.INFORMATION_NEEDED) {
+                            sessionToken = authenticateResponse.sessionToken;
+                        }
                     }
+                    callback.onResponse(call, response);
                 }
-                callback.onResponse(call, response);
-            }
 
-            public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
-                callback.onFailure(call, t);
+                public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
+                    callback.onFailure(call, t);
+                }
             }
-        });
+        );
     }
 
-    public void answerSecurityQuestion(TradeItAnswerSecurityQuestionRequest request, final Callback<TradeItAuthenticateResponse> callback) {
+    public void answerSecurityQuestion(
+            TradeItAnswerSecurityQuestionRequest request,
+            final Callback<TradeItAuthenticateResponse> callback
+    ) {
         request.serverUuid = serverUuid;
         injectSession(request);
-        tradeItApi.answerSecurityQuestion(request).enqueue(new Callback<TradeItAuthenticateResponse>() {
-            public void onResponse(Call<TradeItAuthenticateResponse> call, Response<TradeItAuthenticateResponse> response) {
-                if (response.isSuccessful()) {
-                    TradeItAuthenticateResponse authenticateResponse = response.body();
-                    if (authenticateResponse.status == TradeItResponseStatus.SUCCESS || authenticateResponse.status == TradeItResponseStatus.INFORMATION_NEEDED) {
-                        sessionToken = authenticateResponse.sessionToken;
+        this.statelessTradeItApiClient.tradeItApi.answerSecurityQuestion(request).enqueue(
+            new Callback<TradeItAuthenticateResponse>() {
+                public void onResponse(Call<TradeItAuthenticateResponse> call, Response<TradeItAuthenticateResponse> response) {
+                    if (response.isSuccessful()) {
+                        TradeItAuthenticateResponse authenticateResponse = response.body();
+                        if (authenticateResponse.status == TradeItResponseStatus.SUCCESS
+                                || authenticateResponse.status == TradeItResponseStatus.INFORMATION_NEEDED) {
+                            sessionToken = authenticateResponse.sessionToken;
+                        }
                     }
+                    callback.onResponse(call, response);
                 }
-                callback.onResponse(call, response);
+                public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
+                    callback.onFailure(call, t);
+                }
             }
-            public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
-                callback.onFailure(call, t);
-            }
-        });
+        );
 
     }
 
     public void keepSessionAlive(final TradeItCallback<TradeItResponse> callback) {
-        TradeItRequestWithSession request = new TradeItRequestWithSession();
-        injectSession(request);
-        tradeItApi.keepSessionAlive(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItResponse> response) {
-                callback.onSuccess(response.body());
-            }
-        });
+        this.statelessTradeItApiClient.keepSessionAlive(sessionToken, callback);
     }
 
     public void closeSession(final TradeItCallback<TradeItResponse> callback) {
-        TradeItRequestWithSession request = new TradeItRequestWithSession();
-        injectSession(request);
-        tradeItApi.closeSession(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItResponse> response) {
-                callback.onSuccess(response.body());
-            }
-        });
+        this.statelessTradeItApiClient.closeSession(sessionToken, callback);
     }
 
-    public void previewStockOrEtfOrder(TradeItPreviewStockOrEtfOrderRequest request, final TradeItCallback<TradeItPreviewStockOrEtfOrderResponse> callback) {
+    public void previewStockOrEtfOrder(
+            TradeItPreviewStockOrEtfOrderRequest request,
+            final TradeItCallback<TradeItPreviewStockOrEtfOrderResponse> callback
+    ) {
         injectSession(request);
-        tradeItApi.previewStockOrEtfOrder(request).enqueue(new PreviewTradeCallback<TradeItPreviewStockOrEtfOrderResponse, TradeItPreviewStockOrEtfOrderResponse>(callback) {
-
-            @Override
-            public void onSuccessResponse(Response<TradeItPreviewStockOrEtfOrderResponse> response) {
-                callback.onSuccess(response.body());
-            }
-
-            @Override
-            public void onErrorResponse(TradeItErrorResult errorResult) {
-                callback.onError(errorResult);
-            }
-
-        });
+        this.statelessTradeItApiClient.previewStockOrEtfOrder(request, callback);
     }
 
     public void placeStockOrEtfOrder(String orderId, final TradeItCallback<TradeItPlaceStockOrEtfOrderResponse> callback) {
         TradeItPlaceStockOrEtfOrderRequest request = new TradeItPlaceStockOrEtfOrderRequest(orderId);
         injectSession(request);
-        tradeItApi.placeStockOrEtfOrder(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItPlaceStockOrEtfOrderResponse, TradeItPlaceStockOrEtfOrderResponse>(callback) {
-
-            @Override
-            public void onSuccessResponse(Response<TradeItPlaceStockOrEtfOrderResponse> response) {
-                callback.onSuccess(response.body());
-            }
-        });
+        this.statelessTradeItApiClient.placeStockOrEtfOrder(request, callback);
     }
 
     public void getAccountOverview(String accountNumber, final TradeItCallback<TradeItAccountOverviewResponse> callback) {
         TradeItGetAccountOverviewRequest request = new TradeItGetAccountOverviewRequest(accountNumber);
         injectSession(request);
-        tradeItApi.getAccountOverview(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItAccountOverviewResponse, TradeItAccountOverviewResponse>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItAccountOverviewResponse> response) {
-                callback.onSuccess(response.body());
-            }
-        });
+        this.statelessTradeItApiClient.getAccountOverview(request, callback);
     }
 
     public void getPositions(String accountNumber, final TradeItCallback<List<TradeItPosition>> callback) {
         TradeItGetPositionsRequest request = new TradeItGetPositionsRequest(accountNumber, null);
         injectSession(request);
-        tradeItApi.getPositions(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItGetPositionsResponse, List<TradeItPosition>>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItGetPositionsResponse> response) {
-                callback.onSuccess(response.body().positions);
-            }
-        });
+        this.statelessTradeItApiClient.getPositions(request, callback);
     }
 
     public void getAllOrderStatus(String accountNumber, final TradeItCallback<List<OrderStatusDetails>> callback) {
         TradeItGetAllOrderStatusRequest request = new TradeItGetAllOrderStatusRequest(accountNumber);
         injectSession(request);
-        tradeItApi.getAllOrderStatus(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOrderStatusResponse, List<OrderStatusDetails>>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOrderStatusResponse> response) {
-                callback.onSuccess(response.body().orderStatusDetailsList);
-            }
-        });
+        this.statelessTradeItApiClient.getAllOrderStatus(request, callback);
     }
 
-    public void getSingleOrderStatus(String accountNumber, String orderNumber, final TradeItCallback<OrderStatusDetails> callback) {
+    public void getSingleOrderStatus(
+            String accountNumber,
+            String orderNumber,
+            final TradeItCallback<OrderStatusDetails> callback
+    ) {
         TradeItGetSingleOrderStatusRequest request = new TradeItGetSingleOrderStatusRequest(accountNumber, orderNumber);
         injectSession(request);
-        tradeItApi.getSingleOrderStatus(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOrderStatusResponse, OrderStatusDetails>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOrderStatusResponse> response) {
-                List<OrderStatusDetails> list = response.body().orderStatusDetailsList;
-                OrderStatusDetails orderStatusDetails = list.isEmpty() ? null : list.get(0);
-                callback.onSuccess(orderStatusDetails);
-            }
-        });
+        this.statelessTradeItApiClient.getSingleOrderStatus(request, callback);
     }
 
     public void cancelOrder(String acccountNumber, String orderNumber, final TradeItCallback<OrderStatusDetails> callback) {
         TradeItCancelOrderRequest request = new TradeItCancelOrderRequest(acccountNumber, orderNumber);
         injectSession(request);
-        tradeItApi.cancelOrder(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOrderStatusResponse, OrderStatusDetails>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItOrderStatusResponse> response) {
-                List<OrderStatusDetails> list = response.body().orderStatusDetailsList;
-                OrderStatusDetails orderStatusDetails = list.isEmpty() ? null : list.get(0);
-                callback.onSuccess(orderStatusDetails);
-            }
-        });
+        this.statelessTradeItApiClient.cancelOrder(request, callback);
     }
 
     public void getAllTransactionsHistory(String accountNumber, final TradeItCallback<List<TransactionDetails>>  callback) {
         TradeItGetAllTransactionsHistoryRequest request = new TradeItGetAllTransactionsHistoryRequest(accountNumber);
         injectSession(request);
-
-        tradeItApi.getAllTransactionsHistory(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItGetAllTransactionsHistoryResponse, List<TransactionDetails>>(callback) {
-            @Override
-            public void onSuccessResponse(Response<TradeItGetAllTransactionsHistoryResponse> response) {
-                callback.onSuccess(response.body().transactionHistoryDetailsList);
-            }
-        });
+        this.statelessTradeItApiClient.getAllTransactionsHistory(request, callback);
     }
 
     public String getSessionToken() {
@@ -347,11 +259,11 @@ public class TradeItApiClient {
         }
     }
 
-    public TradeItEnvironment getEnvironment() {
-        return environment;
-    }
-
     public String getApiKey() {
         return apiKey;
+    }
+
+    public TradeItEnvironment getEnvironment() {
+        return this.environment;
     }
 }
