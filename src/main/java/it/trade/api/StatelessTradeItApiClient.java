@@ -58,23 +58,23 @@ public class StatelessTradeItApiClient {
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(environment.getBaseUrl())
-                .client(httpClientBuilder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            .baseUrl(environment.getBaseUrl())
+            .client(httpClientBuilder.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
         return retrofit.create(TradeItApi.class);
     }
 
     public void getAvailableBrokers(
-            String apiKey,
-            final TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>> callback
+        String apiKey,
+        final TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>> callback
     ) {
         TradeItRequestWithKey request = new TradeItRequestWithKey(apiKey);
         tradeItApi.getAvailableBrokers(request).enqueue(
             new DefaultCallbackWithErrorHandling<
-                    TradeItAvailableBrokersResponse,
-                    List<TradeItAvailableBrokersResponse.Broker>
+                TradeItAvailableBrokersResponse,
+                List<TradeItAvailableBrokersResponse.Broker>
             >(callback) {
                 @Override
                 public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
@@ -85,15 +85,15 @@ public class StatelessTradeItApiClient {
     }
 
     public void getOAuthLoginPopupUrlForMobile(
-            String apiKey,
-            String broker,
-            String deepLinkCallback,
-            final TradeItCallback<String> callback
+        String apiKey,
+        String broker,
+        String deepLinkCallback,
+        final TradeItCallback<String> callback
     ) {
         TradeItOAuthLoginPopupUrlForMobileRequest request = new TradeItOAuthLoginPopupUrlForMobileRequest(
-                apiKey,
-                broker,
-                deepLinkCallback
+            apiKey,
+            broker,
+            deepLinkCallback
         );
         tradeItApi.getOAuthLoginPopupUrlForMobile(request).enqueue(
             new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForMobileResponse, String>(callback) {
@@ -107,8 +107,8 @@ public class StatelessTradeItApiClient {
 
     public void getOAuthLoginPopupUrlForWebApp(String apiKey, String broker, final TradeItCallback<String> callback) {
         TradeItOAuthLoginPopupUrlForWebAppRequest request = new TradeItOAuthLoginPopupUrlForWebAppRequest(
-                apiKey,
-                broker
+            apiKey,
+            broker
         );
         tradeItApi.getOAuthLoginPopupUrlForWebApp(request).enqueue(
             new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForWebAppResponse, String>(callback) {
@@ -121,25 +121,25 @@ public class StatelessTradeItApiClient {
     }
 
     public void getOAuthLoginPopupUrlForTokenUpdate(
-            String apiKey,
-            String broker,
-            String userId,
-            String userToken,
-            String deepLinkCallback,
-            final TradeItCallback<String> callback
+        String apiKey,
+        String broker,
+        String userId,
+        String userToken,
+        String deepLinkCallback,
+        final TradeItCallback<String> callback
     ) {
         TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(
-                apiKey,
-                broker,
-                deepLinkCallback,
-                userId,
-                userToken
+            apiKey,
+            broker,
+            deepLinkCallback,
+            userId,
+            userToken
         );
         tradeItApi.getOAuthLoginPopupURLForTokenUpdate(request).enqueue(
             new DefaultCallbackWithErrorHandling<
-                    TradeItOAuthLoginPopupUrlForTokenUpdateResponse,
-                    String
-            >(callback) {
+                TradeItOAuthLoginPopupUrlForTokenUpdateResponse,
+                String
+                >(callback) {
                 @Override
                 public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
                     callback.onSuccess(response.body().oAuthURL);
@@ -174,16 +174,16 @@ public class StatelessTradeItApiClient {
     }
 
     public void authenticate(
-            String apiKey,
-            TradeItLinkedLogin linkedLogin,
-            final AuthenticationCallback<TradeItAuthenticateResponse, ?> callback
+        String apiKey,
+        TradeItLinkedLogin linkedLogin,
+        final AuthenticationCallback<TradeItAuthenticateResponse, ?> callback
     ) {
         TradeItAuthenticateRequest authenticateRequest = new TradeItAuthenticateRequest(apiKey, linkedLogin);
 
         tradeItApi.authenticate(authenticateRequest).enqueue(new Callback<TradeItAuthenticateResponse>() {
             public void onResponse(
-                    Call<TradeItAuthenticateResponse> call, 
-                    Response<TradeItAuthenticateResponse> response
+                Call<TradeItAuthenticateResponse> call,
+                Response<TradeItAuthenticateResponse> response
             ) {
                 callback.onResponse(call, response);
             }
@@ -199,6 +199,7 @@ public class StatelessTradeItApiClient {
             public void onResponse(Call<TradeItAuthenticateResponse> call, Response<TradeItAuthenticateResponse> response) {
                 callback.onResponse(call, response);
             }
+
             public void onFailure(Call<TradeItAuthenticateResponse> call, Throwable t) {
                 callback.onFailure(call, t);
             }
@@ -246,7 +247,6 @@ public class StatelessTradeItApiClient {
 
     public void placeStockOrEtfOrder(TradeItPlaceStockOrEtfOrderRequest request, final TradeItCallback<TradeItPlaceStockOrEtfOrderResponse> callback) {
         tradeItApi.placeStockOrEtfOrder(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItPlaceStockOrEtfOrderResponse, TradeItPlaceStockOrEtfOrderResponse>(callback) {
-
             @Override
             public void onSuccessResponse(Response<TradeItPlaceStockOrEtfOrderResponse> response) {
                 callback.onSuccess(response.body());
@@ -303,7 +303,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void getAllTransactionsHistory(TradeItGetAllTransactionsHistoryRequest request, final TradeItCallback<List<TransactionDetails>>  callback) {
+    public void getAllTransactionsHistory(TradeItGetAllTransactionsHistoryRequest request, final TradeItCallback<List<TransactionDetails>> callback) {
         tradeItApi.getAllTransactionsHistory(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItGetAllTransactionsHistoryResponse, List<TransactionDetails>>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItGetAllTransactionsHistoryResponse> response) {
