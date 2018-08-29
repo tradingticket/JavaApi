@@ -3,7 +3,7 @@
 
     <groupId>it.trade</groupId>
     <artifactId>tradeit-java-api</artifactId>
-    <version>1.1.15-SNAPSHOT</version>
+    <version>1.1.15</version>
     <packaging>jar</packaging>
 
     <name>tradeit-java-api</name>
@@ -68,7 +68,7 @@
         <connection>scm:git:git@github.com:tradingticket/JavaApi.git</connection>
         <developerConnection>scm:git:git@github.com:tradingticket/JavaApi.git</developerConnection>
         <url>git@github.com:tradingticket/JavaApi.git</url>
-        <tag>HEAD</tag>
+        <tag>tradeit-java-api-1.1.15</tag>
     </scm>
 
     <distributionManagement>
