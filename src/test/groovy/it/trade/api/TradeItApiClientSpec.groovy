@@ -1041,7 +1041,7 @@ class TradeItApiClientSpec extends Specification {
 		and: "a successful response from trade it api"
 			int successCallbackCount = 0
 			int errorCallbackCount = 0
-			CryptoOrderDetails orderDetails = new CryptoOrderDetails()
+			CryptoPreviewOrderDetails orderDetails = new CryptoPreviewOrderDetails()
 			orderDetails.orderPair = "BTC/USD"
 			orderDetails.estimatedOrderCommission = 0.0
 			orderDetails.estimatedTotalValue = 1000.0

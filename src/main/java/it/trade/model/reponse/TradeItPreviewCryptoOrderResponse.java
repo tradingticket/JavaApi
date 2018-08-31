@@ -10,5 +10,5 @@ public class TradeItPreviewCryptoOrderResponse extends TradeItResponse {
 
     @SerializedName("orderDetails")
     @Expose
-    public CryptoOrderDetails orderDetails;
+    public CryptoPreviewOrderDetails orderDetails;
 }
