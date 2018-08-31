@@ -9,7 +9,8 @@ public class TradeItPlaceCryptoOrderRequest extends TradeItRequestWithSession {
     @Expose
     public String orderId;
 
-    public TradeItPlaceCryptoOrderRequest(String orderId) {
+    public TradeItPlaceCryptoOrderRequest(String sessionToken, String orderId) {
+        this.sessionToken = sessionToken;
         this.orderId = orderId;
     }
 

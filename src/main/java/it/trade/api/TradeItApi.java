@@ -67,4 +67,9 @@ public interface TradeItApi {
 
     @POST("api/v2/order/placeCryptoOrder")
     Call<TradeItPlaceCryptoOrderResponse> placeCryptoOrder(@Body TradeItPlaceCryptoOrderRequest request);
+
+    @POST("api/v2/brokermarketdata/getCryptoQuote")
+    Call<TradeItCryptoQuoteResponse> getCryptoQuote(@Body  TradeItCryptoQuoteRequest request);
+
+
 }

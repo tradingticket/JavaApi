@@ -1098,7 +1098,7 @@ class TradeItApiClientSpec extends Specification {
 	def "placeCryptoOrder handles a successful response from trade it"() {
 
 		given: "A crypto order request"
-			TradeItPlaceCryptoOrderRequest request = new TradeItPlaceCryptoOrderRequest("MyOrderId")
+			TradeItPlaceCryptoOrderRequest request = Mock(TradeItPlaceCryptoOrderRequest)
 
 		and: "a successful response from trade it"
 			int successfulCallbackCount = 0
@@ -1154,5 +1154,67 @@ class TradeItApiClientSpec extends Specification {
 			placeOrderResponse.orderDetails.orderQuantity == 1.0
 			placeOrderResponse.orderDetails.orderPriceType == "market"
 			placeOrderResponse.orderDetails.orderQuantityType == "QUOTE_CURRENCY"
+	}
+
+	def "getCryptoQuote handles a successful response from trade it"() {
+		given: "A crypto quote request"
+			TradeItCryptoQuoteRequest cryptoQuoteRequest = Mock(TradeItCryptoQuoteRequest)
+
+		and: "A successful response from trade it"
+			int successfulCallbackCount = 0
+			int errorCallbackCount = 0
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.getCryptoQuote(cryptoQuoteRequest) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItCryptoQuoteResponse> callback = args[0]
+				TradeItCryptoQuoteResponse tradeItCryptoQuoteResponse = new TradeItCryptoQuoteResponse()
+				tradeItCryptoQuoteResponse.sessionToken = "My session token"
+				tradeItCryptoQuoteResponse.longMessages = null
+				tradeItCryptoQuoteResponse.status = TradeItResponseStatus.SUCCESS
+				tradeItCryptoQuoteResponse.ask = 300.43
+				tradeItCryptoQuoteResponse.bid = 290.23
+				tradeItCryptoQuoteResponse.last = 294.12
+				tradeItCryptoQuoteResponse.open = 296.78
+				tradeItCryptoQuoteResponse.dayHigh = 299.45
+				tradeItCryptoQuoteResponse.dayLow = 291.08
+
+
+				Response<TradeItPlaceCryptoOrderResponse> response = Response.success(tradeItCryptoQuoteResponse);
+				callback.onResponse(call, response);
+			}
+
+		when: "calling getCryptoQuote"
+			TradeItCryptoQuoteResponse cryptoQuoteResponse = null
+			statelessTradeItApiClient.getCryptoQuote(
+					cryptoQuoteRequest,
+					new TradeItCallback<TradeItCryptoQuoteResponse>() {
+
+						@Override
+						void onSuccess(TradeItCryptoQuoteResponse response) {
+							cryptoQuoteResponse = response
+							successfulCallbackCount++
+						}
+
+						@Override
+						void onError(TradeItErrorResult error) {
+							errorCallbackCount++
+						}
+					}
+			)
+
+
+		then: "expect the success callback called"
+			successfulCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the crypto quote response is correctly filled"
+			cryptoQuoteResponse.status == TradeItResponseStatus.SUCCESS
+			cryptoQuoteResponse.ask == 300.43
+			cryptoQuoteResponse.bid == 290.23
+			cryptoQuoteResponse.last == 294.12
+			cryptoQuoteResponse.open == 296.78
+			cryptoQuoteResponse.dayHigh == 299.45
+			cryptoQuoteResponse.dayLow == 291.08
 	}
 }

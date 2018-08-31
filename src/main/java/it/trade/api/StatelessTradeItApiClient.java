@@ -350,4 +350,18 @@ public class StatelessTradeItApiClient {
                 }
         );
     }
+
+    public void getCryptoQuote(
+            final TradeItCryptoQuoteRequest request,
+            final TradeItCallback<TradeItCryptoQuoteResponse> callback
+    ) {
+        tradeItApi.getCryptoQuote(request).enqueue(
+                new DefaultCallbackWithErrorHandling<TradeItCryptoQuoteResponse, TradeItCryptoQuoteResponse>(callback) {
+                    @Override
+                    public void onSuccessResponse(Response<TradeItCryptoQuoteResponse> response) {
+                        callback.onSuccess(response.body());
+                    }
+                }
+        );
+    }
 }

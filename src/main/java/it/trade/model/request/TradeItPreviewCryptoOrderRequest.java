@@ -41,6 +41,7 @@ public class TradeItPreviewCryptoOrderRequest extends TradeItRequestWithSession 
     public String orderQuantityType;
 
     public TradeItPreviewCryptoOrderRequest(
+            String sessionToken,
             String accountNumber,
             String orderAction,
             Double orderQuantity,
@@ -51,6 +52,7 @@ public class TradeItPreviewCryptoOrderRequest extends TradeItRequestWithSession 
             Double orderStopPrice,
             String orderQuantityType
     ) {
+        this.sessionToken = sessionToken;
         this.accountNumber = accountNumber;
         this.orderAction = orderAction;
         this.orderQuantity = orderQuantity;
