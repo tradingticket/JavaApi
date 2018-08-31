@@ -1033,4 +1033,65 @@ class TradeItApiClientSpec extends Specification {
 
 
 	}
+
+	def "previewCryptoOrder handle a successful order from trade it"() {
+		given: "a preview request"
+			TradeItPreviewCryptoOrderRequest previewRequest = Mock(TradeItPreviewCryptoOrderRequest)
+
+		and: "a successful response from trade it api"
+			int successCallbackCount = 0
+			int errorCallbackCount = 0
+			CryptoOrderDetails orderDetails = new CryptoOrderDetails()
+			orderDetails.orderPair = "BTC/USD"
+			orderDetails.estimatedOrderCommission = 0.0
+			orderDetails.estimatedTotalValue = 1000.0
+			orderDetails.orderAction = "buy"
+			orderDetails.orderPriceType = "market"
+			orderDetails.orderQuantity = 10.0
+			orderDetails.orderQuantityType = "QUOTE_CURRENCY"
+			orderDetails.orderExpiration = "day"
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.previewCryptoOrder(previewRequest) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItPreviewCryptoOrderResponse> callback = args[0]
+				TradeItPreviewCryptoOrderResponse tradeItPreviewCryptoOrderResponse = new TradeItPreviewCryptoOrderResponse()
+				tradeItPreviewCryptoOrderResponse.orderId = "MyOrderId"
+				tradeItPreviewCryptoOrderResponse.orderDetails = orderDetails
+				tradeItPreviewCryptoOrderResponse.status = TradeItResponseStatus.REVIEW_ORDER
+				Response<TradeItPreviewCryptoOrderResponse> response = Response.success(tradeItPreviewCryptoOrderResponse)
+				callback.onResponse(call, response)
+			}
+
+		when:
+			TradeItPreviewCryptoOrderResponse previewResponse = null
+			statelessTradeItApiClient.previewCryptoOrder(previewRequest, new TradeItCallback<TradeItPreviewCryptoOrderResponse>() {
+				@Override
+				void onSuccess(TradeItPreviewCryptoOrderResponse response) {
+					previewResponse = response
+					successCallbackCount++
+				}
+
+				@Override
+				void onError(TradeItErrorResult error) {
+					errorCallbackCount++
+				}
+			})
+
+		then: "expect the success callback called"
+			successCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the preview response is correctly filled"
+			previewResponse.status == TradeItResponseStatus.REVIEW_ORDER
+			previewResponse.orderId == "MyOrderId"
+			previewResponse.orderDetails.orderAction == "buy"
+			previewResponse.orderDetails.orderPair == "BTC/USD"
+			previewResponse.orderDetails.orderExpiration == "day"
+			previewResponse.orderDetails.orderQuantity == 10.0
+			previewResponse.orderDetails.orderPriceType == "market"
+			previewResponse.orderDetails.orderQuantityType == "QUOTE_CURRENCY"
+			previewResponse.orderDetails.estimatedTotalValue == 1000.0
+			previewResponse.orderDetails.estimatedOrderCommission == 0.0
+	}
 }

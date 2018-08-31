@@ -61,4 +61,7 @@ public interface TradeItApi {
 
     @POST("api/v2/account/getAllTransactionsHistory")
     Call<TradeItGetAllTransactionsHistoryResponse> getAllTransactionsHistory(@Body TradeItGetAllTransactionsHistoryRequest request);
+
+    @POST("api/v2/order/previewCryptoOrder")
+    Call<TradeItPreviewCryptoOrderResponse> previewCryptoOrder(@Body TradeItPreviewCryptoOrderRequest request);
 }
