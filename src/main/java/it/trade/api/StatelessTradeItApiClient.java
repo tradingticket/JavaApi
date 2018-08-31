@@ -334,4 +334,20 @@ public class StatelessTradeItApiClient {
                         }
                 );
     }
+
+    public void placeCryptoOrder(
+            TradeItPlaceCryptoOrderRequest request,
+            final TradeItCallback<TradeItPlaceCryptoOrderResponse> callback
+    ) {
+        tradeItApi.placeCryptoOrder(request).enqueue(
+                new DefaultCallbackWithErrorHandling<TradeItPlaceCryptoOrderResponse, TradeItPlaceCryptoOrderResponse>(
+                        callback
+                ) {
+                    @Override
+                    public void onSuccessResponse(Response<TradeItPlaceCryptoOrderResponse> response) {
+                        callback.onSuccess(response.body());
+                    }
+                }
+        );
+    }
 }

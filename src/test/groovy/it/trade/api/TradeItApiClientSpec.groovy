@@ -1094,4 +1094,65 @@ class TradeItApiClientSpec extends Specification {
 			previewResponse.orderDetails.estimatedTotalValue == 1000.0
 			previewResponse.orderDetails.estimatedOrderCommission == 0.0
 	}
+
+	def "placeCryptoOrder handles a successful response from trade it"() {
+
+		given: "A crypto order request"
+			TradeItPlaceCryptoOrderRequest request = new TradeItPlaceCryptoOrderRequest("MyOrderId")
+
+		and: "a successful response from trade it"
+			int successfulCallbackCount = 0
+			int errorCallbackCount = 0
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.placeCryptoOrder(_  as TradeItPlaceCryptoOrderRequest) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItPlaceCryptoOrderResponse> callback = args[0]
+				TradeItPlaceCryptoOrderResponse tradeItPlaceCryptoOrderResponse = new TradeItPlaceCryptoOrderResponse()
+				tradeItPlaceCryptoOrderResponse.sessionToken = "My session token"
+				tradeItPlaceCryptoOrderResponse.longMessages = null
+				tradeItPlaceCryptoOrderResponse.status = TradeItResponseStatus.SUCCESS
+				tradeItPlaceCryptoOrderResponse.orderNumber = "My Order Id"
+				tradeItPlaceCryptoOrderResponse.orderDetails = new CryptoTradeOrderDetails()
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderAction = "buy"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderPair = "BTC/USD"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderExpiration = "day"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderQuantity = 1.0
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderQuantityType = "QUOTE_CURRENCY"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderPriceType = "market"
+
+
+				Response<TradeItPlaceCryptoOrderResponse> response = Response.success(tradeItPlaceCryptoOrderResponse);
+				callback.onResponse(call, response);
+		}
+
+		when: "calling place order"
+			TradeItPlaceCryptoOrderResponse placeOrderResponse = null
+			statelessTradeItApiClient.placeCryptoOrder(request, new TradeItCallback<TradeItPlaceCryptoOrderResponse>() {
+				@Override
+				void onSuccess(TradeItPlaceCryptoOrderResponse response) {
+					placeOrderResponse= response
+					successfulCallbackCount++
+				}
+
+				@Override
+				void onError(TradeItErrorResult error) {
+					errorCallbackCount++
+				}
+			})
+
+		then: "expect the success callback called"
+			successfulCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the place crypto order response is correctly filled"
+			placeOrderResponse.status == TradeItResponseStatus.SUCCESS
+			placeOrderResponse.orderNumber == "My Order Id"
+			placeOrderResponse.orderDetails.orderAction == "buy"
+			placeOrderResponse.orderDetails.orderPair == "BTC/USD"
+			placeOrderResponse.orderDetails.orderExpiration == "day"
+			placeOrderResponse.orderDetails.orderQuantity == 1.0
+			placeOrderResponse.orderDetails.orderPriceType == "market"
+			placeOrderResponse.orderDetails.orderQuantityType == "QUOTE_CURRENCY"
+	}
 }
