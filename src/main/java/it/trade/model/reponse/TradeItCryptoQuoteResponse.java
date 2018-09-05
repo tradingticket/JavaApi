@@ -38,4 +38,18 @@ public class TradeItCryptoQuoteResponse extends TradeItResponse {
     @SerializedName("dateTime")
     @Expose
     public String dateTime;
+
+    @Override
+    public String toString() {
+        return "TradeItCryptoQuoteResponse{" +
+                "ask=" + ask +
+                ", bid=" + bid +
+                ", last=" + last +
+                ", open=" + open +
+                ", dayHigh=" + dayHigh +
+                ", dayLow=" + dayLow +
+                ", volume=" + volume +
+                ", dateTime='" + dateTime + '\'' +
+                "}, " + super.toString();
+    }
 }

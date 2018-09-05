@@ -55,4 +55,22 @@ public class CryptoPreviewOrderDetails {
     @SerializedName("warnings")
     @Expose
     public List<Warning> warnings = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "CryptoPreviewOrderDetails{" +
+                "estimatedTotalValue=" + estimatedTotalValue +
+                ", orderQuantityType='" + orderQuantityType + '\'' +
+                ", orderCommissionLabel='" + orderCommissionLabel + '\'' +
+                ", orderExpiration='" + orderExpiration + '\'' +
+                ", orderAction='" + orderAction + '\'' +
+                ", orderPriceType='" + orderPriceType + '\'' +
+                ", orderQuantity=" + orderQuantity +
+                ", orderValueLabel='" + orderValueLabel + '\'' +
+                ", estimatedOrderCommission=" + estimatedOrderCommission +
+                ", estimatedOrderValue=" + estimatedOrderValue +
+                ", orderPair='" + orderPair + '\'' +
+                ", warnings=" + warnings +
+                '}';
+    }
 }

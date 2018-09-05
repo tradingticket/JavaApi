@@ -11,4 +11,12 @@ public class TradeItPreviewCryptoOrderResponse extends TradeItResponse {
     @SerializedName("orderDetails")
     @Expose
     public CryptoPreviewOrderDetails orderDetails;
+
+    @Override
+    public String toString() {
+        return "TradeItPreviewCryptoOrderResponse{" +
+                "orderId='" + orderId + '\'' +
+                ", orderDetails=" + orderDetails +
+                "}, " + super.toString();
+    }
 }
