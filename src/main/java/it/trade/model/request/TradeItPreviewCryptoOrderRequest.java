@@ -64,6 +64,8 @@ public class TradeItPreviewCryptoOrderRequest extends TradeItRequestWithSession 
         this.orderQuantityType = orderQuantityType;
     }
 
+    public TradeItPreviewCryptoOrderRequest() {}
+
     @Override
     public String toString() {
         return "TradeItPreviewCryptoOrderRequest{" +

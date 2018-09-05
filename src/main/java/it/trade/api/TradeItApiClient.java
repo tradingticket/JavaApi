@@ -242,6 +242,7 @@ public class TradeItApiClient {
             TradeItPreviewCryptoOrderRequest request,
             final TradeItCallback<TradeItPreviewCryptoOrderResponse> callback
     ) {
+        injectSession(request);
         this.statelessTradeItApiClient.previewCryptoOrder(request, callback);
     }
 

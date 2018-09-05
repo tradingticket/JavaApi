@@ -14,6 +14,8 @@ public class TradeItPlaceCryptoOrderRequest extends TradeItRequestWithSession {
         this.orderId = orderId;
     }
 
+    public TradeItPlaceCryptoOrderRequest() {}
+
     @Override
     public String toString() {
         return "TradeItPlaceCryptoOrderRequest{" +

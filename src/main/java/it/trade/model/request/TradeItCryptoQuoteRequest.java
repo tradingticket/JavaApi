@@ -18,4 +18,6 @@ public class TradeItCryptoQuoteRequest extends TradeItRequestWithSession {
         this.accountNumber = accountNumber;
         this.pair = pair;
     }
+
+    public TradeItCryptoQuoteRequest() {}
 }
