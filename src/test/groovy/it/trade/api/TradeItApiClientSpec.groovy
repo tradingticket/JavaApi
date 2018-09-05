@@ -1065,7 +1065,7 @@ class TradeItApiClientSpec extends Specification {
 
 		when:
 			TradeItPreviewCryptoOrderResponse previewResponse = null
-			statelessTradeItApiClient.previewCryptoOrder(previewRequest, new TradeItCallback<TradeItPreviewCryptoOrderResponse>() {
+			apiClient.previewCryptoOrder(previewRequest, new TradeItCallback<TradeItPreviewCryptoOrderResponse>() {
 				@Override
 				void onSuccess(TradeItPreviewCryptoOrderResponse response) {
 					previewResponse = response
@@ -1128,7 +1128,7 @@ class TradeItApiClientSpec extends Specification {
 
 		when: "calling place order"
 			TradeItPlaceCryptoOrderResponse placeOrderResponse = null
-			statelessTradeItApiClient.placeCryptoOrder(request, new TradeItCallback<TradeItPlaceCryptoOrderResponse>() {
+			apiClient.placeCryptoOrder("My Order Id", new TradeItCallback<TradeItPlaceCryptoOrderResponse>() {
 				@Override
 				void onSuccess(TradeItPlaceCryptoOrderResponse response) {
 					placeOrderResponse= response
@@ -1157,15 +1157,12 @@ class TradeItApiClientSpec extends Specification {
 	}
 
 	def "getCryptoQuote handles a successful response from trade it"() {
-		given: "A crypto quote request"
-			TradeItCryptoQuoteRequest cryptoQuoteRequest = Mock(TradeItCryptoQuoteRequest)
-
-		and: "A successful response from trade it"
+		given: "A successful response from trade it"
 			int successfulCallbackCount = 0
 			int errorCallbackCount = 0
 
 			Call<TradeItResponse> call = Mock(Call)
-			1 * tradeItApi.getCryptoQuote(cryptoQuoteRequest) >> call
+			1 * tradeItApi.getCryptoQuote(_) >> call
 			1 * call.enqueue(_) >> { args ->
 				Callback<TradeItCryptoQuoteResponse> callback = args[0]
 				TradeItCryptoQuoteResponse tradeItCryptoQuoteResponse = new TradeItCryptoQuoteResponse()
@@ -1186,8 +1183,9 @@ class TradeItApiClientSpec extends Specification {
 
 		when: "calling getCryptoQuote"
 			TradeItCryptoQuoteResponse cryptoQuoteResponse = null
-			statelessTradeItApiClient.getCryptoQuote(
-					cryptoQuoteRequest,
+			apiClient.getCryptoQuote(
+					"MyAccountNumber",
+					"BTC/USD",
 					new TradeItCallback<TradeItCryptoQuoteResponse>() {
 
 						@Override

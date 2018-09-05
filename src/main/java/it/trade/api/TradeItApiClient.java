@@ -238,6 +238,27 @@ public class TradeItApiClient {
         this.statelessTradeItApiClient.getAllTransactionsHistory(request, callback);
     }
 
+    public void previewCryptoOrder(
+            TradeItPreviewCryptoOrderRequest request,
+            final TradeItCallback<TradeItPreviewCryptoOrderResponse> callback
+    ) {
+        this.statelessTradeItApiClient.previewCryptoOrder(request, callback);
+    }
+
+    public void placeCryptoOrder(String orderId, TradeItCallback<TradeItPlaceCryptoOrderResponse> callback) {
+        TradeItPlaceCryptoOrderRequest request = new TradeItPlaceCryptoOrderRequest(this.sessionToken, orderId);
+        this.statelessTradeItApiClient.placeCryptoOrder(request, callback);
+    }
+
+    public void getCryptoQuote(String accountNumber, String pair, TradeItCallback<TradeItCryptoQuoteResponse> callback) {
+        TradeItCryptoQuoteRequest request = new TradeItCryptoQuoteRequest(
+                this.sessionToken,
+                accountNumber,
+                pair
+        );
+        this.statelessTradeItApiClient.getCryptoQuote(request, callback);
+    }
+
     public String getSessionToken() {
         return sessionToken;
     }
