@@ -52,6 +52,14 @@ public class CryptoPreviewOrderDetails {
     @Expose
     public String orderPair;
 
+    @SerializedName("orderLimitPrice")
+    @Expose
+    public Double orderLimitPrice;
+
+    @SerializedName("orderStopPrice")
+    @Expose
+    public Double orderStopPrice;
+
     @SerializedName("warnings")
     @Expose
     public List<Warning> warnings = new ArrayList<>();
