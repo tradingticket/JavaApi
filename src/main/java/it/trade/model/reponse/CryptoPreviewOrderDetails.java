@@ -36,10 +36,6 @@ public class CryptoPreviewOrderDetails {
     @Expose
     public Double orderQuantity;
 
-    @SerializedName("orderValueLabel")
-    @Expose
-    public String orderValueLabel;
-
     @SerializedName("estimatedOrderCommission")
     @Expose
     public Double estimatedOrderCommission;
@@ -74,7 +70,6 @@ public class CryptoPreviewOrderDetails {
                 ", orderAction='" + orderAction + '\'' +
                 ", orderPriceType='" + orderPriceType + '\'' +
                 ", orderQuantity=" + orderQuantity +
-                ", orderValueLabel='" + orderValueLabel + '\'' +
                 ", estimatedOrderCommission=" + estimatedOrderCommission +
                 ", estimatedOrderValue=" + estimatedOrderValue +
                 ", orderPair='" + orderPair + '\'' +
