@@ -58,132 +58,132 @@ public class StatelessTradeItApiClient {
 //        httpClientBuilder.networkInterceptors().add(new LoggingInterceptor()); //uncomment if you want some request/response logs
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(environment.getBaseUrl())
-                .client(httpClientBuilder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            .baseUrl(environment.getBaseUrl())
+            .client(httpClientBuilder.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
         return retrofit.create(TradeItApi.class);
     }
 
     public void getAvailableBrokers(
-            String apiKey,
-            final TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>> callback
+        String apiKey,
+        final TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>> callback
     ) {
         TradeItRequestWithKey request = new TradeItRequestWithKey(apiKey);
         tradeItApi.getAvailableBrokers(request).enqueue(
-                new DefaultCallbackWithErrorHandling<
-                        TradeItAvailableBrokersResponse,
-                        List<TradeItAvailableBrokersResponse.Broker>
-                        >(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
-                        callback.onSuccess(response.body().brokerList);
-                    }
+            new DefaultCallbackWithErrorHandling<
+                TradeItAvailableBrokersResponse,
+                List<TradeItAvailableBrokersResponse.Broker>
+                >(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
+                    callback.onSuccess(response.body().brokerList);
                 }
+            }
         );
     }
 
     public void getOAuthLoginPopupUrlForMobile(
-            String apiKey,
-            String broker,
-            String deepLinkCallback,
-            final TradeItCallback<String> callback
+        String apiKey,
+        String broker,
+        String deepLinkCallback,
+        final TradeItCallback<String> callback
     ) {
         TradeItOAuthLoginPopupUrlForMobileRequest request = new TradeItOAuthLoginPopupUrlForMobileRequest(
-                apiKey,
-                broker,
-                deepLinkCallback
+            apiKey,
+            broker,
+            deepLinkCallback
         );
         tradeItApi.getOAuthLoginPopupUrlForMobile(request).enqueue(
-                new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForMobileResponse, String>(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForMobileResponse> response) {
-                        callback.onSuccess(response.body().oAuthURL);
-                    }
+            new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForMobileResponse, String>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForMobileResponse> response) {
+                    callback.onSuccess(response.body().oAuthURL);
                 }
+            }
         );
     }
 
     public void getOAuthLoginPopupUrlForWebApp(String apiKey, String broker, final TradeItCallback<String> callback) {
         TradeItOAuthLoginPopupUrlForWebAppRequest request = new TradeItOAuthLoginPopupUrlForWebAppRequest(
-                apiKey,
-                broker
+            apiKey,
+            broker
         );
         tradeItApi.getOAuthLoginPopupUrlForWebApp(request).enqueue(
-                new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForWebAppResponse, String>(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForWebAppResponse> response) {
-                        callback.onSuccess(response.body().oAuthURL);
-                    }
+            new DefaultCallbackWithErrorHandling<TradeItOAuthLoginPopupUrlForWebAppResponse, String>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForWebAppResponse> response) {
+                    callback.onSuccess(response.body().oAuthURL);
                 }
+            }
         );
     }
 
     public void getOAuthLoginPopupUrlForTokenUpdate(
-            String apiKey,
-            String broker,
-            String userId,
-            String userToken,
-            String deepLinkCallback,
-            final TradeItCallback<String> callback
+        String apiKey,
+        String broker,
+        String userId,
+        String userToken,
+        String deepLinkCallback,
+        final TradeItCallback<String> callback
     ) {
         TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(
-                apiKey,
-                broker,
-                deepLinkCallback,
-                userId,
-                userToken
+            apiKey,
+            broker,
+            deepLinkCallback,
+            userId,
+            userToken
         );
         tradeItApi.getOAuthLoginPopupURLForTokenUpdate(request).enqueue(
-                new DefaultCallbackWithErrorHandling<
-                        TradeItOAuthLoginPopupUrlForTokenUpdateResponse,
-                        String
-                        >(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
-                        callback.onSuccess(response.body().oAuthURL);
-                    }
+            new DefaultCallbackWithErrorHandling<
+                TradeItOAuthLoginPopupUrlForTokenUpdateResponse,
+                String
+                >(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItOAuthLoginPopupUrlForTokenUpdateResponse> response) {
+                    callback.onSuccess(response.body().oAuthURL);
                 }
+            }
         );
     }
 
     public void linkBrokerWithOauthVerifier(String apiKey, String oAuthVerifier, final TradeItCallback<TradeItLinkedLogin> callback) {
         final TradeItOAuthAccessTokenRequest request = new TradeItOAuthAccessTokenRequest(apiKey, oAuthVerifier);
         tradeItApi.getOAuthAccessToken(request).enqueue(
-                new DefaultCallbackWithErrorHandling<TradeItOAuthAccessTokenResponse, TradeItLinkedLogin>(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItOAuthAccessTokenResponse> response) {
-                        TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin(request, response.body());
-                        callback.onSuccess(linkedLogin);
-                    }
+            new DefaultCallbackWithErrorHandling<TradeItOAuthAccessTokenResponse, TradeItLinkedLogin>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItOAuthAccessTokenResponse> response) {
+                    TradeItLinkedLogin linkedLogin = new TradeItLinkedLogin(request, response.body());
+                    callback.onSuccess(linkedLogin);
                 }
+            }
         );
     }
 
     public void unlinkBrokerAccount(String apiKey, TradeItLinkedLogin linkedLogin, final TradeItCallback callback) {
         TradeItUnlinkLoginRequest request = new TradeItUnlinkLoginRequest(apiKey, linkedLogin);
         tradeItApi.unlinkLogin(request).enqueue(
-                new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItResponse> response) {
-                        callback.onSuccess(response.body());
-                    }
+            new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItResponse> response) {
+                    callback.onSuccess(response.body());
                 }
+            }
         );
     }
 
     public void authenticate(
-            String apiKey,
-            TradeItLinkedLogin linkedLogin,
-            final AuthenticationCallback<TradeItAuthenticateResponse, ?> callback
+        String apiKey,
+        TradeItLinkedLogin linkedLogin,
+        final AuthenticationCallback<TradeItAuthenticateResponse, ?> callback
     ) {
         TradeItAuthenticateRequest authenticateRequest = new TradeItAuthenticateRequest(apiKey, linkedLogin);
 
         tradeItApi.authenticate(authenticateRequest).enqueue(new Callback<TradeItAuthenticateResponse>() {
             public void onResponse(
-                    Call<TradeItAuthenticateResponse> call,
-                    Response<TradeItAuthenticateResponse> response
+                Call<TradeItAuthenticateResponse> call,
+                Response<TradeItAuthenticateResponse> response
             ) {
                 callback.onResponse(call, response);
             }
@@ -313,55 +313,55 @@ public class StatelessTradeItApiClient {
     }
 
     public void previewCryptoOrder(
-            TradeItPreviewCryptoOrderRequest request,
-            final TradeItCallback<TradeItPreviewCryptoOrderResponse> callback
+        TradeItPreviewCryptoOrderRequest request,
+        final TradeItCallback<TradeItPreviewCryptoOrderResponse> callback
     ) {
         tradeItApi.previewCryptoOrder(request)
-                .enqueue(
-                        new PreviewTradeCallback<TradeItPreviewCryptoOrderResponse, TradeItPreviewCryptoOrderResponse>(
-                                callback
-                        ) {
+            .enqueue(
+                new PreviewTradeCallback<TradeItPreviewCryptoOrderResponse, TradeItPreviewCryptoOrderResponse>(
+                    callback
+                ) {
 
-                            @Override
-                            public void onSuccessResponse(Response<TradeItPreviewCryptoOrderResponse> response) {
-                                callback.onSuccess(response.body());
-                            }
+                    @Override
+                    public void onSuccessResponse(Response<TradeItPreviewCryptoOrderResponse> response) {
+                        callback.onSuccess(response.body());
+                    }
 
-                            @Override
-                            public void onErrorResponse(TradeItErrorResult errorResult) {
-                                callback.onError(errorResult);
-                            }
-                        }
-                );
+                    @Override
+                    public void onErrorResponse(TradeItErrorResult errorResult) {
+                        callback.onError(errorResult);
+                    }
+                }
+            );
     }
 
     public void placeCryptoOrder(
-            TradeItPlaceCryptoOrderRequest request,
-            final TradeItCallback<TradeItPlaceCryptoOrderResponse> callback
+        TradeItPlaceCryptoOrderRequest request,
+        final TradeItCallback<TradeItPlaceCryptoOrderResponse> callback
     ) {
         tradeItApi.placeCryptoOrder(request).enqueue(
-                new DefaultCallbackWithErrorHandling<TradeItPlaceCryptoOrderResponse, TradeItPlaceCryptoOrderResponse>(
-                        callback
-                ) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItPlaceCryptoOrderResponse> response) {
-                        callback.onSuccess(response.body());
-                    }
+            new DefaultCallbackWithErrorHandling<TradeItPlaceCryptoOrderResponse, TradeItPlaceCryptoOrderResponse>(
+                callback
+            ) {
+                @Override
+                public void onSuccessResponse(Response<TradeItPlaceCryptoOrderResponse> response) {
+                    callback.onSuccess(response.body());
                 }
+            }
         );
     }
 
     public void getCryptoQuote(
-            final TradeItCryptoQuoteRequest request,
-            final TradeItCallback<TradeItCryptoQuoteResponse> callback
+        final TradeItCryptoQuoteRequest request,
+        final TradeItCallback<TradeItCryptoQuoteResponse> callback
     ) {
         tradeItApi.getCryptoQuote(request).enqueue(
-                new DefaultCallbackWithErrorHandling<TradeItCryptoQuoteResponse, TradeItCryptoQuoteResponse>(callback) {
-                    @Override
-                    public void onSuccessResponse(Response<TradeItCryptoQuoteResponse> response) {
-                        callback.onSuccess(response.body());
-                    }
+            new DefaultCallbackWithErrorHandling<TradeItCryptoQuoteResponse, TradeItCryptoQuoteResponse>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItCryptoQuoteResponse> response) {
+                    callback.onSuccess(response.body());
                 }
+            }
         );
     }
 }
