@@ -68,14 +68,14 @@ public class StatelessTradeItApiClient {
 
     public void getAvailableBrokers(
         String apiKey,
-        final TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>> callback
+        TradeItCallback<List<TradeItAvailableBrokersResponse.Broker>> callback
     ) {
         TradeItRequestWithKey request = new TradeItRequestWithKey(apiKey);
         tradeItApi.getAvailableBrokers(request).enqueue(
             new DefaultCallbackWithErrorHandling<
                 TradeItAvailableBrokersResponse,
                 List<TradeItAvailableBrokersResponse.Broker>
-            >(callback) {
+                >(callback) {
                 @Override
                 public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
                     callback.onSuccess(response.body().brokerList);
@@ -88,7 +88,7 @@ public class StatelessTradeItApiClient {
         String apiKey,
         String broker,
         String deepLinkCallback,
-        final TradeItCallback<String> callback
+        TradeItCallback<String> callback
     ) {
         TradeItOAuthLoginPopupUrlForMobileRequest request = new TradeItOAuthLoginPopupUrlForMobileRequest(
             apiKey,
@@ -105,7 +105,7 @@ public class StatelessTradeItApiClient {
         );
     }
 
-    public void getOAuthLoginPopupUrlForWebApp(String apiKey, String broker, final TradeItCallback<String> callback) {
+    public void getOAuthLoginPopupUrlForWebApp(String apiKey, String broker, TradeItCallback<String> callback) {
         TradeItOAuthLoginPopupUrlForWebAppRequest request = new TradeItOAuthLoginPopupUrlForWebAppRequest(
             apiKey,
             broker
@@ -126,7 +126,7 @@ public class StatelessTradeItApiClient {
         String userId,
         String userToken,
         String deepLinkCallback,
-        final TradeItCallback<String> callback
+        TradeItCallback<String> callback
     ) {
         TradeItOAuthLoginPopupUrlForTokenUpdateRequest request = new TradeItOAuthLoginPopupUrlForTokenUpdateRequest(
             apiKey,
@@ -148,7 +148,7 @@ public class StatelessTradeItApiClient {
         );
     }
 
-    public void linkBrokerWithOauthVerifier(String apiKey, String oAuthVerifier, final TradeItCallback<TradeItLinkedLogin> callback) {
+    public void linkBrokerWithOauthVerifier(String apiKey, String oAuthVerifier, TradeItCallback<TradeItLinkedLogin> callback) {
         final TradeItOAuthAccessTokenRequest request = new TradeItOAuthAccessTokenRequest(apiKey, oAuthVerifier);
         tradeItApi.getOAuthAccessToken(request).enqueue(
             new DefaultCallbackWithErrorHandling<TradeItOAuthAccessTokenResponse, TradeItLinkedLogin>(callback) {
@@ -161,7 +161,7 @@ public class StatelessTradeItApiClient {
         );
     }
 
-    public void unlinkBrokerAccount(String apiKey, TradeItLinkedLogin linkedLogin, final TradeItCallback callback) {
+    public void unlinkBrokerAccount(String apiKey, TradeItLinkedLogin linkedLogin, TradeItCallback callback) {
         TradeItUnlinkLoginRequest request = new TradeItUnlinkLoginRequest(apiKey, linkedLogin);
         tradeItApi.unlinkLogin(request).enqueue(
             new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
@@ -207,7 +207,7 @@ public class StatelessTradeItApiClient {
 
     }
 
-    public void keepSessionAlive(String sessionToken, final TradeItCallback<TradeItResponse> callback) {
+    public void keepSessionAlive(String sessionToken, TradeItCallback<TradeItResponse> callback) {
         TradeItRequestWithSession request = new TradeItRequestWithSession();
         request.sessionToken = sessionToken;
         tradeItApi.keepSessionAlive(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
@@ -218,7 +218,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void closeSession(String sessionToken, final TradeItCallback<TradeItResponse> callback) {
+    public void closeSession(String sessionToken, TradeItCallback<TradeItResponse> callback) {
         TradeItRequestWithSession request = new TradeItRequestWithSession();
         request.sessionToken = sessionToken;
         tradeItApi.closeSession(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItResponse, TradeItResponse>(callback) {
@@ -229,7 +229,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void previewStockOrEtfOrder(TradeItPreviewStockOrEtfOrderRequest request, final TradeItCallback<TradeItPreviewStockOrEtfOrderResponse> callback) {
+    public void previewStockOrEtfOrder(TradeItPreviewStockOrEtfOrderRequest request, TradeItCallback<TradeItPreviewStockOrEtfOrderResponse> callback) {
         tradeItApi.previewStockOrEtfOrder(request).enqueue(new PreviewTradeCallback<TradeItPreviewStockOrEtfOrderResponse, TradeItPreviewStockOrEtfOrderResponse>(callback) {
 
             @Override
@@ -245,7 +245,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void placeStockOrEtfOrder(TradeItPlaceStockOrEtfOrderRequest request, final TradeItCallback<TradeItPlaceStockOrEtfOrderResponse> callback) {
+    public void placeStockOrEtfOrder(TradeItPlaceStockOrEtfOrderRequest request, TradeItCallback<TradeItPlaceStockOrEtfOrderResponse> callback) {
         tradeItApi.placeStockOrEtfOrder(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItPlaceStockOrEtfOrderResponse, TradeItPlaceStockOrEtfOrderResponse>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItPlaceStockOrEtfOrderResponse> response) {
@@ -254,7 +254,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void getAccountOverview(TradeItGetAccountOverviewRequest request, final TradeItCallback<TradeItAccountOverviewResponse> callback) {
+    public void getAccountOverview(TradeItGetAccountOverviewRequest request, TradeItCallback<TradeItAccountOverviewResponse> callback) {
         tradeItApi.getAccountOverview(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItAccountOverviewResponse, TradeItAccountOverviewResponse>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItAccountOverviewResponse> response) {
@@ -263,7 +263,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void getPositions(TradeItGetPositionsRequest request, final TradeItCallback<List<TradeItPosition>> callback) {
+    public void getPositions(TradeItGetPositionsRequest request, TradeItCallback<List<TradeItPosition>> callback) {
         tradeItApi.getPositions(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItGetPositionsResponse, List<TradeItPosition>>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItGetPositionsResponse> response) {
@@ -272,7 +272,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void getAllOrderStatus(TradeItGetAllOrderStatusRequest request, final TradeItCallback<List<OrderStatusDetails>> callback) {
+    public void getAllOrderStatus(TradeItGetAllOrderStatusRequest request, TradeItCallback<List<OrderStatusDetails>> callback) {
         tradeItApi.getAllOrderStatus(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOrderStatusResponse, List<OrderStatusDetails>>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOrderStatusResponse> response) {
@@ -281,7 +281,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void getSingleOrderStatus(TradeItGetSingleOrderStatusRequest request, final TradeItCallback<OrderStatusDetails> callback) {
+    public void getSingleOrderStatus(TradeItGetSingleOrderStatusRequest request, TradeItCallback<OrderStatusDetails> callback) {
         tradeItApi.getSingleOrderStatus(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOrderStatusResponse, OrderStatusDetails>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOrderStatusResponse> response) {
@@ -292,7 +292,7 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void cancelOrder(TradeItCancelOrderRequest request, final TradeItCallback<OrderStatusDetails> callback) {
+    public void cancelOrder(TradeItCancelOrderRequest request, TradeItCallback<OrderStatusDetails> callback) {
         tradeItApi.cancelOrder(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItOrderStatusResponse, OrderStatusDetails>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItOrderStatusResponse> response) {
@@ -303,12 +303,65 @@ public class StatelessTradeItApiClient {
         });
     }
 
-    public void getAllTransactionsHistory(TradeItGetAllTransactionsHistoryRequest request, final TradeItCallback<List<TransactionDetails>> callback) {
+    public void getAllTransactionsHistory(TradeItGetAllTransactionsHistoryRequest request, TradeItCallback<List<TransactionDetails>> callback) {
         tradeItApi.getAllTransactionsHistory(request).enqueue(new DefaultCallbackWithErrorHandling<TradeItGetAllTransactionsHistoryResponse, List<TransactionDetails>>(callback) {
             @Override
             public void onSuccessResponse(Response<TradeItGetAllTransactionsHistoryResponse> response) {
                 callback.onSuccess(response.body().transactionHistoryDetailsList);
             }
         });
+    }
+
+    public void previewCryptoOrder(
+        TradeItPreviewCryptoOrderRequest request,
+        TradeItCallback<TradeItPreviewCryptoOrderResponse> callback
+    ) {
+        tradeItApi.previewCryptoOrder(request)
+            .enqueue(
+                new PreviewTradeCallback<TradeItPreviewCryptoOrderResponse, TradeItPreviewCryptoOrderResponse>(
+                    callback
+                ) {
+
+                    @Override
+                    public void onSuccessResponse(Response<TradeItPreviewCryptoOrderResponse> response) {
+                        callback.onSuccess(response.body());
+                    }
+
+                    @Override
+                    public void onErrorResponse(TradeItErrorResult errorResult) {
+                        callback.onError(errorResult);
+                    }
+                }
+            );
+    }
+
+    public void placeCryptoOrder(
+        TradeItPlaceCryptoOrderRequest request,
+        TradeItCallback<TradeItPlaceCryptoOrderResponse> callback
+    ) {
+        tradeItApi.placeCryptoOrder(request).enqueue(
+            new DefaultCallbackWithErrorHandling<TradeItPlaceCryptoOrderResponse, TradeItPlaceCryptoOrderResponse>(
+                callback
+            ) {
+                @Override
+                public void onSuccessResponse(Response<TradeItPlaceCryptoOrderResponse> response) {
+                    callback.onSuccess(response.body());
+                }
+            }
+        );
+    }
+
+    public void getCryptoQuote(
+        TradeItCryptoQuoteRequest request,
+        TradeItCallback<TradeItCryptoQuoteResponse> callback
+    ) {
+        tradeItApi.getCryptoQuote(request).enqueue(
+            new DefaultCallbackWithErrorHandling<TradeItCryptoQuoteResponse, TradeItCryptoQuoteResponse>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItCryptoQuoteResponse> response) {
+                    callback.onSuccess(response.body());
+                }
+            }
+        );
     }
 }
