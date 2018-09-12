@@ -41,16 +41,16 @@ public class TradeItPreviewCryptoOrderRequest extends TradeItRequestWithSession 
     public String orderQuantityType;
 
     public TradeItPreviewCryptoOrderRequest(
-            String sessionToken,
-            String accountNumber,
-            String orderAction,
-            Double orderQuantity,
-            String orderPair,
-            String orderPriceType,
-            String orderExpiration,
-            Double orderLimitPrice,
-            Double orderStopPrice,
-            String orderQuantityType
+        String sessionToken,
+        String accountNumber,
+        String orderAction,
+        Double orderQuantity,
+        String orderPair,
+        String orderPriceType,
+        String orderExpiration,
+        Double orderLimitPrice,
+        Double orderStopPrice,
+        String orderQuantityType
     ) {
         this.sessionToken = sessionToken;
         this.accountNumber = accountNumber;
@@ -64,20 +64,21 @@ public class TradeItPreviewCryptoOrderRequest extends TradeItRequestWithSession 
         this.orderQuantityType = orderQuantityType;
     }
 
-    public TradeItPreviewCryptoOrderRequest() {}
+    public TradeItPreviewCryptoOrderRequest() {
+    }
 
     @Override
     public String toString() {
         return "TradeItPreviewCryptoOrderRequest{" +
-                "accountNumber='" + accountNumber + '\'' +
-                ", orderAction='" + orderAction + '\'' +
-                ", orderQuantity=" + orderQuantity +
-                ", orderPair='" + orderPair + '\'' +
-                ", orderPriceType='" + orderPriceType + '\'' +
-                ", orderExpiration='" + orderExpiration + '\'' +
-                ", orderLimitPrice=" + orderLimitPrice +
-                ", orderStopPrice=" + orderStopPrice +
-                ", orderQuantityType='" + orderQuantityType + '\'' +
-                "}, " + super.toString();
+            "accountNumber='" + accountNumber + '\'' +
+            ", orderAction='" + orderAction + '\'' +
+            ", orderQuantity=" + orderQuantity +
+            ", orderPair='" + orderPair + '\'' +
+            ", orderPriceType='" + orderPriceType + '\'' +
+            ", orderExpiration='" + orderExpiration + '\'' +
+            ", orderLimitPrice=" + orderLimitPrice +
+            ", orderStopPrice=" + orderStopPrice +
+            ", orderQuantityType='" + orderQuantityType + '\'' +
+            "}, " + super.toString();
     }
 }

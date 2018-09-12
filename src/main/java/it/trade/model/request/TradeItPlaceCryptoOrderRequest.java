@@ -14,12 +14,13 @@ public class TradeItPlaceCryptoOrderRequest extends TradeItRequestWithSession {
         this.orderId = orderId;
     }
 
-    public TradeItPlaceCryptoOrderRequest() {}
+    public TradeItPlaceCryptoOrderRequest() {
+    }
 
     @Override
     public String toString() {
         return "TradeItPlaceCryptoOrderRequest{" +
-                "orderId='" + orderId + '\'' +
-                "}, " + super.toString();
+            "orderId='" + orderId + '\'' +
+            "}, " + super.toString();
     }
 }

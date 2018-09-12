@@ -15,8 +15,8 @@ public class TradeItPreviewCryptoOrderResponse extends TradeItResponse {
     @Override
     public String toString() {
         return "TradeItPreviewCryptoOrderResponse{" +
-                "orderId='" + orderId + '\'' +
-                ", orderDetails=" + orderDetails +
-                "}, " + super.toString();
+            "orderId='" + orderId + '\'' +
+            ", orderDetails=" + orderDetails +
+            "}, " + super.toString();
     }
 }

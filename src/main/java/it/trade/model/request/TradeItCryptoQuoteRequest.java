@@ -19,5 +19,6 @@ public class TradeItCryptoQuoteRequest extends TradeItRequestWithSession {
         this.pair = pair;
     }
 
-    public TradeItCryptoQuoteRequest() {}
+    public TradeItCryptoQuoteRequest() {
+    }
 }

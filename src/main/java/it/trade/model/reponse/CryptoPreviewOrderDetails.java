@@ -63,17 +63,17 @@ public class CryptoPreviewOrderDetails {
     @Override
     public String toString() {
         return "CryptoPreviewOrderDetails{" +
-                "estimatedTotalValue=" + estimatedTotalValue +
-                ", orderQuantityType='" + orderQuantityType + '\'' +
-                ", orderCommissionLabel='" + orderCommissionLabel + '\'' +
-                ", orderExpiration='" + orderExpiration + '\'' +
-                ", orderAction='" + orderAction + '\'' +
-                ", orderPriceType='" + orderPriceType + '\'' +
-                ", orderQuantity=" + orderQuantity +
-                ", estimatedOrderCommission=" + estimatedOrderCommission +
-                ", estimatedOrderValue=" + estimatedOrderValue +
-                ", orderPair='" + orderPair + '\'' +
-                ", warnings=" + warnings +
-                '}';
+            "estimatedTotalValue=" + estimatedTotalValue +
+            ", orderQuantityType='" + orderQuantityType + '\'' +
+            ", orderCommissionLabel='" + orderCommissionLabel + '\'' +
+            ", orderExpiration='" + orderExpiration + '\'' +
+            ", orderAction='" + orderAction + '\'' +
+            ", orderPriceType='" + orderPriceType + '\'' +
+            ", orderQuantity=" + orderQuantity +
+            ", estimatedOrderCommission=" + estimatedOrderCommission +
+            ", estimatedOrderValue=" + estimatedOrderValue +
+            ", orderPair='" + orderPair + '\'' +
+            ", warnings=" + warnings +
+            '}';
     }
 }

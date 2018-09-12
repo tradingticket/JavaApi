@@ -42,14 +42,14 @@ public class TradeItCryptoQuoteResponse extends TradeItResponse {
     @Override
     public String toString() {
         return "TradeItCryptoQuoteResponse{" +
-                "ask=" + ask +
-                ", bid=" + bid +
-                ", last=" + last +
-                ", open=" + open +
-                ", dayHigh=" + dayHigh +
-                ", dayLow=" + dayLow +
-                ", volume=" + volume +
-                ", dateTime='" + dateTime + '\'' +
-                "}, " + super.toString();
+            "ask=" + ask +
+            ", bid=" + bid +
+            ", last=" + last +
+            ", open=" + open +
+            ", dayHigh=" + dayHigh +
+            ", dayLow=" + dayLow +
+            ", volume=" + volume +
+            ", dateTime='" + dateTime + '\'' +
+            "}, " + super.toString();
     }
 }

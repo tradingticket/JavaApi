@@ -75,7 +75,7 @@ public class StatelessTradeItApiClient {
             new DefaultCallbackWithErrorHandling<
                 TradeItAvailableBrokersResponse,
                 List<TradeItAvailableBrokersResponse.Broker>
-                >(callback) {
+            >(callback) {
                 @Override
                 public void onSuccessResponse(Response<TradeItAvailableBrokersResponse> response) {
                     callback.onSuccess(response.body().brokerList);
