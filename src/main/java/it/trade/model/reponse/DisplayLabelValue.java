@@ -18,6 +18,9 @@ public class DisplayLabelValue {
     @Expose
     public List<String> supportedOrderQuantityTypes;
 
+    public DisplayLabelValue(String displayLabel, String value) {
+        this(displayLabel, value, null);
+    }
     public DisplayLabelValue(String displayLabel, String value, List<String> supportedOrderQuantityTypes) {
         this.displayLabel = displayLabel;
         this.value = value;
