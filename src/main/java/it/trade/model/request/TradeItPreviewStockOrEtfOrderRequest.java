@@ -41,6 +41,10 @@ public class TradeItPreviewStockOrEtfOrderRequest extends TradeItRequestWithSess
     @Expose
     public boolean userDisabledMargin;
 
+    @SerializedName("orderQuantityType")
+    @Expose
+    public String orderQuantityType;
+
     public TradeItPreviewStockOrEtfOrderRequest() {};
 
     public TradeItPreviewStockOrEtfOrderRequest(String accountNumber,
@@ -51,6 +55,7 @@ public class TradeItPreviewStockOrEtfOrderRequest extends TradeItRequestWithSess
                                                 String orderLimitPrice,
                                                 String orderStopPrice,
                                                 String orderExpiration,
+                                                String orderQuantityType,
                                                 boolean userDisabledMargin
     ) {
         this.accountNumber = accountNumber;
@@ -61,6 +66,7 @@ public class TradeItPreviewStockOrEtfOrderRequest extends TradeItRequestWithSess
         this.orderLimitPrice = orderLimitPrice;
         this.orderStopPrice = orderStopPrice;
         this.orderExpiration = orderExpiration;
+        this.orderQuantityType = orderQuantityType;
         this.userDisabledMargin = userDisabledMargin;
     }
 
@@ -75,6 +81,7 @@ public class TradeItPreviewStockOrEtfOrderRequest extends TradeItRequestWithSess
                 ", orderLimitPrice='" + orderLimitPrice + '\'' +
                 ", orderStopPrice='" + orderStopPrice + '\'' +
                 ", orderExpiration='" + orderExpiration + '\'' +
+                ", orderQuantityType='" + orderQuantityType + '\'' +
                 ", userDisabledMargin'= " + userDisabledMargin + '\'' +
                 "}, " + super.toString();
     }
