@@ -83,6 +83,14 @@ public class OrderDetails {
     @Expose
     public Double estimatedTotalValue;
 
+    @SerializedName("userDisabledMargin")
+    @Expose
+    public boolean userDisabledMargin;
+
+    @SerializedName("orderQuantityType")
+    @Expose
+    public String orderQuantityType;
+
     @SerializedName("warnings")
     @Expose
     public List<Warning> warnings = new ArrayList<>();
@@ -109,6 +117,8 @@ public class OrderDetails {
                 ", shortHoldings=" + shortHoldings +
                 ", estimatedOrderValue=" + estimatedOrderValue +
                 ", estimatedTotalValue=" + estimatedTotalValue +
+                ", userDisabledMargin=" + userDisabledMargin +
+                ", orderQuantityType=" + orderQuantityType +
                 ", warnings=" + warnings +
                 '}';
     }
