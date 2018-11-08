@@ -16,7 +16,8 @@ public class TradeItAuthenticateRequest extends TradeItRequestWithKey {
     @Expose
     public String serverUuid;
 
-    public TradeItAuthenticateRequest(TradeItLinkedLogin linkedLogin) {
+    public TradeItAuthenticateRequest(String apiKey, TradeItLinkedLogin linkedLogin) {
+        super(apiKey);
         this.userToken = linkedLogin.userToken;
         this.userId = linkedLogin.userId;
     }

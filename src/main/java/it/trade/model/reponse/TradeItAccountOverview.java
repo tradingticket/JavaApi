@@ -32,17 +32,32 @@ public class TradeItAccountOverview {
     @Expose
     public Double totalValue;
 
+    @SerializedName("buyingPowerLabel")
+    @Expose
+    public String buyingPowerLabel;
+
+    @SerializedName("accountBaseCurrency")
+    @Expose
+    public String accountBaseCurrency;
+
+    @SerializedName("marginCash")
+    @Expose
+    public Double marginCash;
+
     @Override
     public String toString() {
         return "TradeItAccountOverview{" +
-                "availableCash=" + availableCash +
-                ", buyingPower=" + buyingPower +
-                ", dayAbsoluteReturn=" + dayAbsoluteReturn +
-                ", dayPercentReturn=" + dayPercentReturn +
-                ", totalAbsoluteReturn=" + totalAbsoluteReturn +
-                ", totalPercentReturn=" + totalPercentReturn +
-                ", totalValue=" + totalValue +
-                "}, " + super.toString();
+            "availableCash=" + availableCash +
+            ", buyingPower=" + buyingPower +
+            ", dayAbsoluteReturn=" + dayAbsoluteReturn +
+            ", dayPercentReturn=" + dayPercentReturn +
+            ", totalAbsoluteReturn=" + totalAbsoluteReturn +
+            ", totalPercentReturn=" + totalPercentReturn +
+            ", totalValue=" + totalValue +
+            ", buyingPowerLabel='" + buyingPowerLabel + '\'' +
+            ", accountBaseCurrency='" + accountBaseCurrency + '\'' +
+            ", marginCash=" + marginCash +
+            '}';
     }
 
     @Override
@@ -54,8 +69,7 @@ public class TradeItAccountOverview {
 
         if (availableCash != null ? !availableCash.equals(that.availableCash) : that.availableCash != null)
             return false;
-        if (buyingPower != null ? !buyingPower.equals(that.buyingPower) : that.buyingPower != null)
-            return false;
+        if (buyingPower != null ? !buyingPower.equals(that.buyingPower) : that.buyingPower != null) return false;
         if (dayAbsoluteReturn != null ? !dayAbsoluteReturn.equals(that.dayAbsoluteReturn) : that.dayAbsoluteReturn != null)
             return false;
         if (dayPercentReturn != null ? !dayPercentReturn.equals(that.dayPercentReturn) : that.dayPercentReturn != null)
@@ -64,8 +78,12 @@ public class TradeItAccountOverview {
             return false;
         if (totalPercentReturn != null ? !totalPercentReturn.equals(that.totalPercentReturn) : that.totalPercentReturn != null)
             return false;
-        return totalValue != null ? totalValue.equals(that.totalValue) : that.totalValue == null;
-
+        if (totalValue != null ? !totalValue.equals(that.totalValue) : that.totalValue != null) return false;
+        if (buyingPowerLabel != null ? !buyingPowerLabel.equals(that.buyingPowerLabel) : that.buyingPowerLabel != null)
+            return false;
+        if (accountBaseCurrency != null ? !accountBaseCurrency.equals(that.accountBaseCurrency) : that.accountBaseCurrency != null)
+            return false;
+        return marginCash != null ? marginCash.equals(that.marginCash) : that.marginCash == null;
     }
 
     @Override
@@ -77,7 +95,9 @@ public class TradeItAccountOverview {
         result = 31 * result + (totalAbsoluteReturn != null ? totalAbsoluteReturn.hashCode() : 0);
         result = 31 * result + (totalPercentReturn != null ? totalPercentReturn.hashCode() : 0);
         result = 31 * result + (totalValue != null ? totalValue.hashCode() : 0);
+        result = 31 * result + (buyingPowerLabel != null ? buyingPowerLabel.hashCode() : 0);
+        result = 31 * result + (accountBaseCurrency != null ? accountBaseCurrency.hashCode() : 0);
+        result = 31 * result + (marginCash != null ? marginCash.hashCode() : 0);
         return result;
     }
-
 }

@@ -12,7 +12,8 @@ public class TradeItUnlinkLoginRequest extends TradeItRequestWithKey {
     @Expose
     public String userId;
 
-    public TradeItUnlinkLoginRequest(TradeItLinkedLogin linkedLogin) {
+    public TradeItUnlinkLoginRequest(String apiKey, TradeItLinkedLogin linkedLogin) {
+        super(apiKey);
         this.userToken = linkedLogin.userToken;
         this.userId = linkedLogin.userId;
     }

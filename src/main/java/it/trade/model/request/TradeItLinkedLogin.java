@@ -23,14 +23,10 @@ public class TradeItLinkedLogin {
         this.userToken = userToken;
     }
 
-    public TradeItLinkedLogin(TradeItLinkLoginRequest linkLoginRequest, TradeItLinkLoginResponse linkLoginResponse) {
-        this.broker = linkLoginRequest.broker;
-        this.userId = linkLoginResponse.userId;
-        this.userToken = linkLoginResponse.userToken;
-    }
-
-    public TradeItLinkedLogin(TradeItOAuthAccessTokenRequest oAuthAccessTokenRequest,
-                              TradeItOAuthAccessTokenResponse oAuthAccessTokenResponse) {
+    public TradeItLinkedLogin(
+        TradeItOAuthAccessTokenRequest oAuthAccessTokenRequest,
+        TradeItOAuthAccessTokenResponse oAuthAccessTokenResponse
+    ) {
         this.broker = oAuthAccessTokenResponse.broker;
         this.userId = oAuthAccessTokenResponse.userId;
         this.userToken = oAuthAccessTokenResponse.userToken;

@@ -19,11 +19,12 @@ import spock.lang.Specification
  */
 class TradeItApiClientSpec extends Specification {
 
+	StatelessTradeItApiClient statelessTradeItApiClient = new StatelessTradeItApiClient(TradeItEnvironment.LOCAL)
 	TradeItApi tradeItApi = Mock(TradeItApi)
-	TradeItApiClient apiClient = new TradeItApiClient(tradeItApi)
+	TradeItApiClient apiClient = new TradeItApiClient("My API Key", statelessTradeItApiClient)
 
 	void setup() {
-		TradeItRequestWithKey.API_KEY = "My Api Key"
+		statelessTradeItApiClient.tradeItApi = tradeItApi
 	}
 
 	def "GetAvailableBrokers handles a successful response from trade it"() {
@@ -454,7 +455,7 @@ class TradeItApiClientSpec extends Specification {
 			account1.name = "My account name 1"
 
 			OrderCapability orderCapability = new OrderCapability()
-			DisplayLabelValue action = new DisplayLabelValue("Buy", "buy")
+			DisplayLabelValue action = new DisplayLabelValue("Buy", "buy", ["SHARES"])
 			orderCapability.instrument = Instrument.EQUITIES
 			orderCapability.actions = [action]
 			account1.orderCapabilities = [orderCapability]
@@ -660,7 +661,7 @@ class TradeItApiClientSpec extends Specification {
 				}
 			})
 
-		then: "expect the sucess callback called"
+		then: "expect the success callback called"
 			successfulCallbackCount == 1
 			errorCallbackCount == 0
 
@@ -1031,5 +1032,187 @@ class TradeItApiClientSpec extends Specification {
 			errorResult.longMessages == ["My long message"]
 
 
+	}
+
+	def "previewCryptoOrder handle a successful order from trade it"() {
+		given: "a preview request"
+			TradeItPreviewCryptoOrderRequest previewRequest = Mock(TradeItPreviewCryptoOrderRequest)
+
+		and: "a successful response from trade it api"
+			int successCallbackCount = 0
+			int errorCallbackCount = 0
+			CryptoPreviewOrderDetails orderDetails = new CryptoPreviewOrderDetails()
+			orderDetails.orderPair = "BTC/USD"
+			orderDetails.estimatedOrderCommission = 0.0
+			orderDetails.estimatedTotalValue = 1000.0
+			orderDetails.orderAction = "buy"
+			orderDetails.orderPriceType = "market"
+			orderDetails.orderQuantity = 10.0
+			orderDetails.orderQuantityType = "QUOTE_CURRENCY"
+			orderDetails.orderExpiration = "day"
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.previewCryptoOrder(previewRequest) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItPreviewCryptoOrderResponse> callback = args[0]
+				TradeItPreviewCryptoOrderResponse tradeItPreviewCryptoOrderResponse = new TradeItPreviewCryptoOrderResponse()
+				tradeItPreviewCryptoOrderResponse.orderId = "MyOrderId"
+				tradeItPreviewCryptoOrderResponse.orderDetails = orderDetails
+				tradeItPreviewCryptoOrderResponse.status = TradeItResponseStatus.REVIEW_ORDER
+				Response<TradeItPreviewCryptoOrderResponse> response = Response.success(tradeItPreviewCryptoOrderResponse)
+				callback.onResponse(call, response)
+			}
+
+		when:
+			TradeItPreviewCryptoOrderResponse previewResponse = null
+			apiClient.previewCryptoOrder(previewRequest, new TradeItCallback<TradeItPreviewCryptoOrderResponse>() {
+				@Override
+				void onSuccess(TradeItPreviewCryptoOrderResponse response) {
+					previewResponse = response
+					successCallbackCount++
+				}
+
+				@Override
+				void onError(TradeItErrorResult error) {
+					errorCallbackCount++
+				}
+			})
+
+		then: "expect the success callback called"
+			successCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the preview response is correctly filled"
+			previewResponse.status == TradeItResponseStatus.REVIEW_ORDER
+			previewResponse.orderId == "MyOrderId"
+			previewResponse.orderDetails.orderAction == "buy"
+			previewResponse.orderDetails.orderPair == "BTC/USD"
+			previewResponse.orderDetails.orderExpiration == "day"
+			previewResponse.orderDetails.orderQuantity == 10.0
+			previewResponse.orderDetails.orderPriceType == "market"
+			previewResponse.orderDetails.orderQuantityType == "QUOTE_CURRENCY"
+			previewResponse.orderDetails.estimatedTotalValue == 1000.0
+			previewResponse.orderDetails.estimatedOrderCommission == 0.0
+	}
+
+	def "placeCryptoOrder handles a successful response from trade it"() {
+
+		given: "A crypto order request"
+			TradeItPlaceCryptoOrderRequest request = Mock(TradeItPlaceCryptoOrderRequest)
+
+		and: "a successful response from trade it"
+			int successfulCallbackCount = 0
+			int errorCallbackCount = 0
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.placeCryptoOrder(_  as TradeItPlaceCryptoOrderRequest) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItPlaceCryptoOrderResponse> callback = args[0]
+				TradeItPlaceCryptoOrderResponse tradeItPlaceCryptoOrderResponse = new TradeItPlaceCryptoOrderResponse()
+				tradeItPlaceCryptoOrderResponse.sessionToken = "My session token"
+				tradeItPlaceCryptoOrderResponse.longMessages = null
+				tradeItPlaceCryptoOrderResponse.status = TradeItResponseStatus.SUCCESS
+				tradeItPlaceCryptoOrderResponse.orderNumber = "My Order Id"
+				tradeItPlaceCryptoOrderResponse.orderDetails = new CryptoTradeOrderDetails()
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderAction = "buy"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderPair = "BTC/USD"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderExpiration = "day"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderQuantity = 1.0
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderQuantityType = "QUOTE_CURRENCY"
+				tradeItPlaceCryptoOrderResponse.orderDetails.orderPriceType = "market"
+
+
+				Response<TradeItPlaceCryptoOrderResponse> response = Response.success(tradeItPlaceCryptoOrderResponse);
+				callback.onResponse(call, response);
+		}
+
+		when: "calling place order"
+			TradeItPlaceCryptoOrderResponse placeOrderResponse = null
+			apiClient.placeCryptoOrder("My Order Id", new TradeItCallback<TradeItPlaceCryptoOrderResponse>() {
+				@Override
+				void onSuccess(TradeItPlaceCryptoOrderResponse response) {
+					placeOrderResponse= response
+					successfulCallbackCount++
+				}
+
+				@Override
+				void onError(TradeItErrorResult error) {
+					errorCallbackCount++
+				}
+			})
+
+		then: "expect the success callback called"
+			successfulCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the place crypto order response is correctly filled"
+			placeOrderResponse.status == TradeItResponseStatus.SUCCESS
+			placeOrderResponse.orderNumber == "My Order Id"
+			placeOrderResponse.orderDetails.orderAction == "buy"
+			placeOrderResponse.orderDetails.orderPair == "BTC/USD"
+			placeOrderResponse.orderDetails.orderExpiration == "day"
+			placeOrderResponse.orderDetails.orderQuantity == 1.0
+			placeOrderResponse.orderDetails.orderPriceType == "market"
+			placeOrderResponse.orderDetails.orderQuantityType == "QUOTE_CURRENCY"
+	}
+
+	def "getCryptoQuote handles a successful response from trade it"() {
+		given: "A successful response from trade it"
+			int successfulCallbackCount = 0
+			int errorCallbackCount = 0
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.getCryptoQuote(_) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItCryptoQuoteResponse> callback = args[0]
+				TradeItCryptoQuoteResponse tradeItCryptoQuoteResponse = new TradeItCryptoQuoteResponse()
+				tradeItCryptoQuoteResponse.sessionToken = "My session token"
+				tradeItCryptoQuoteResponse.longMessages = null
+				tradeItCryptoQuoteResponse.status = TradeItResponseStatus.SUCCESS
+				tradeItCryptoQuoteResponse.ask = 300.43
+				tradeItCryptoQuoteResponse.bid = 290.23
+				tradeItCryptoQuoteResponse.last = 294.12
+				tradeItCryptoQuoteResponse.open = 296.78
+				tradeItCryptoQuoteResponse.dayHigh = 299.45
+				tradeItCryptoQuoteResponse.dayLow = 291.08
+
+
+				Response<TradeItPlaceCryptoOrderResponse> response = Response.success(tradeItCryptoQuoteResponse);
+				callback.onResponse(call, response);
+			}
+
+		when: "calling getCryptoQuote"
+			TradeItCryptoQuoteResponse cryptoQuoteResponse = null
+			apiClient.getCryptoQuote(
+					"MyAccountNumber",
+					"BTC/USD",
+					new TradeItCallback<TradeItCryptoQuoteResponse>() {
+
+						@Override
+						void onSuccess(TradeItCryptoQuoteResponse response) {
+							cryptoQuoteResponse = response
+							successfulCallbackCount++
+						}
+
+						@Override
+						void onError(TradeItErrorResult error) {
+							errorCallbackCount++
+						}
+					}
+			)
+
+
+		then: "expect the success callback called"
+			successfulCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the crypto quote response is correctly filled"
+			cryptoQuoteResponse.status == TradeItResponseStatus.SUCCESS
+			cryptoQuoteResponse.ask == 300.43
+			cryptoQuoteResponse.bid == 290.23
+			cryptoQuoteResponse.last == 294.12
+			cryptoQuoteResponse.open == 296.78
+			cryptoQuoteResponse.dayHigh == 299.45
+			cryptoQuoteResponse.dayLow == 291.08
 	}
 }
