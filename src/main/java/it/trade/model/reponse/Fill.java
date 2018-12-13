@@ -18,7 +18,7 @@ public class Fill {
 
     @SerializedName("quantity")
     @Expose
-    public Integer quantity;
+    public Double quantity;
 
     @Override
     public String toString() {
