@@ -21,11 +21,11 @@ public class OrderLeg {
 
     @SerializedName("orderedQuantity")
     @Expose
-    public Integer orderedQuantity;
+    public Double orderedQuantity;
 
     @SerializedName("filledQuantity")
     @Expose
-    public Integer filledQuantity;
+    public Double filledQuantity;
 
     @SerializedName("action")
     @Expose
