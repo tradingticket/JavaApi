@@ -260,6 +260,19 @@ public class TradeItApiClient {
         this.statelessTradeItApiClient.getCryptoQuote(request, callback);
     }
 
+    public void getProxyVoteUrl(
+        String accountNumber,
+        String symbol,
+        TradeItCallback<TradeItProxyVoteUrlResponse> callback
+    ) {
+        TradeItProxyVoteUrlRequest request = new TradeItProxyVoteUrlRequest(
+            this.sessionToken,
+            accountNumber,
+            symbol
+        );
+        this.statelessTradeItApiClient.getProxyVoteUrl(request, callback);
+    }
+
     public String getSessionToken() {
         return sessionToken;
     }

@@ -69,6 +69,10 @@ public class TradeItPosition {
     @Expose
     public String currency;
 
+    @SerializedName("isProxyVoteEligible")
+    @Expose
+    public Boolean isProxyVoteEligible;
+
     @Override
     public String toString() {
         return "TradeItPosition{" +
@@ -86,6 +90,7 @@ public class TradeItPosition {
                 ", totalGainLossPercentage=" + totalGainLossPercentage +
                 ", exchange='" + exchange + '\'' +
                 ", currency='" + currency + '\'' +
+                ", isProxyVoteEligible='" + isProxyVoteEligible + '\'' +
                 '}';
     }
 
@@ -115,7 +120,8 @@ public class TradeItPosition {
         if (totalGainLossPercentage != null ? !totalGainLossPercentage.equals(that.totalGainLossPercentage) : that.totalGainLossPercentage != null)
             return false;
         if (exchange != null ? !exchange.equals(that.exchange) : that.exchange != null) return false;
-        return currency != null ? currency.equals(that.currency) : that.currency == null;
+        if (currency != null ? !currency.equals(that.currency) : that.currency != null) return false;
+        return isProxyVoteEligible != null ? isProxyVoteEligible.equals(that.isProxyVoteEligible) : that.isProxyVoteEligible == null;
     }
 
     @Override
@@ -134,6 +140,7 @@ public class TradeItPosition {
         result = 31 * result + (totalGainLossPercentage != null ? totalGainLossPercentage.hashCode() : 0);
         result = 31 * result + (exchange != null ? exchange.hashCode() : 0);
         result = 31 * result + (currency != null ? currency.hashCode() : 0);
+        result = 31 * result + (isProxyVoteEligible != null ? isProxyVoteEligible.hashCode() : 0);
         return result;
     }
 }

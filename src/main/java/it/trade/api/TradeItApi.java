@@ -71,5 +71,7 @@ public interface TradeItApi {
     @POST("api/v2/brokermarketdata/getCryptoQuote")
     Call<TradeItCryptoQuoteResponse> getCryptoQuote(@Body  TradeItCryptoQuoteRequest request);
 
+    @POST("api/v2/proxyvote/getProxyVoteUrl")
+    Call<TradeItProxyVoteUrlResponse> getProxyVoteUrl(@Body  TradeItProxyVoteUrlRequest request);
 
 }
