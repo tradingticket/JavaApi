@@ -364,4 +364,18 @@ public class StatelessTradeItApiClient {
             }
         );
     }
+
+    public void getProxyVoteUrl(
+        TradeItProxyVoteUrlRequest request,
+        TradeItCallback<TradeItProxyVoteUrlResponse> callback
+    ) {
+        tradeItApi.getProxyVoteUrl(request).enqueue(
+            new DefaultCallbackWithErrorHandling<TradeItProxyVoteUrlResponse, TradeItProxyVoteUrlResponse>(callback) {
+                @Override
+                public void onSuccessResponse(Response<TradeItProxyVoteUrlResponse> response) {
+                    callback.onSuccess(response.body());
+                }
+            }
+        );
+    }
 }

@@ -1215,4 +1215,54 @@ class TradeItApiClientSpec extends Specification {
 			cryptoQuoteResponse.dayHigh == 299.45
 			cryptoQuoteResponse.dayLow == 291.08
 	}
+
+	def "getProxyVoteUrl handles a successful response from trade it"() {
+		given: "A successful response from trade it"
+			int successfulCallbackCount = 0
+			int errorCallbackCount = 0
+
+			Call<TradeItResponse> call = Mock(Call)
+			1 * tradeItApi.getProxyVoteUrl(_) >> call
+			1 * call.enqueue(_) >> { args ->
+				Callback<TradeItProxyVoteUrlResponse> callback = args[0]
+				TradeItProxyVoteUrlResponse tradeItProxyVoteUrlresponse = new TradeItProxyVoteUrlResponse()
+				tradeItProxyVoteUrlresponse.sessionToken = "My session token"
+				tradeItProxyVoteUrlresponse.longMessages = null
+				tradeItProxyVoteUrlresponse.status = TradeItResponseStatus.SUCCESS
+				tradeItProxyVoteUrlresponse.proxyVoteUrl = "http://myproxyvoteurl.com"
+
+
+				Response<TradeItProxyVoteUrlResponse> response = Response.success(tradeItProxyVoteUrlresponse);
+				callback.onResponse(call, response);
+			}
+
+		when: "calling getProxyVoteUrl"
+		TradeItProxyVoteUrlResponse proxyVoteUrlResponse = null
+			apiClient.getProxyVoteUrl(
+				"MyAccountNumber",
+				"BR",
+				new TradeItCallback<TradeItProxyVoteUrlResponse>() {
+
+					@Override
+					void onSuccess(TradeItProxyVoteUrlResponse response) {
+						proxyVoteUrlResponse = response
+						successfulCallbackCount++
+					}
+
+					@Override
+					void onError(TradeItErrorResult error) {
+						errorCallbackCount++
+					}
+				}
+			)
+
+
+		then: "expect the success callback called"
+			successfulCallbackCount == 1
+			errorCallbackCount == 0
+
+		and: "the proxy vote url response is correctly filled"
+			proxyVoteUrlResponse.status == TradeItResponseStatus.SUCCESS
+			proxyVoteUrlResponse.proxyVoteUrl == "http://myproxyvoteurl.com"
+	}
 }
