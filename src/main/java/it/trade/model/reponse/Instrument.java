@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 public enum Instrument {
 
-    @SerializedName("equities")
+    @SerializedName("EQUITIES")
     EQUITIES,
-    @SerializedName("fx")
+    @SerializedName("FX")
     FX,
-    @SerializedName("options")
+    @SerializedName("OPTIONS")
     OPTIONS,
-    @SerializedName("crypto")
+    @SerializedName("CRYPTO")
     CRYPTO,
     UNKNOWN;
 }
